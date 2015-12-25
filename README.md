@@ -44,3 +44,9 @@ To run as x64 binary and bypass Applocker:
 cd \Windows\Microsoft.NET\Framework64\v4.0.30319 (Or newer .NET version folder)
 
 InstallUtil.exe /logfile= /LogToConsole=false /U C:\p0wnedShell\p0wnedShellx64.exe
+
+### Shout-outs:
+
+p0wnedshell is heavily based on tools and knowledge from people like harmj0y, the guys from Powersploit, Sean Metcalf, SubTee, Nikhil Mittal, Benjamin Delpy e.g. So shout-outs go to them and of course to our friends in Redmond for giving us access to a very powerfull hacking language.
+
+
