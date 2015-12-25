@@ -21,6 +21,8 @@ cd \Windows\Microsoft.NET\Framework64\v4.0.30319
 
 csc.exe  /unsafe /reference:"C:\p0wnedShell\System.Management.Automation.dll" /reference:System.IO.Compression.dll /win32icon:C:\p0wnedShell\p0wnedShell.ico /out:C:\p0wnedShell\p0wnedShellx64.exe /platform:x64 "C:\p0wnedShell\Source\*.cs"
 
+p0wnedShell uses the System.Management.Automation namespace, so make sure you have the System.Management.Automation.dll within your source path when compiling outside of Visual Studio.
+
 ### How to use it:
 
 Just the run the executables or...
