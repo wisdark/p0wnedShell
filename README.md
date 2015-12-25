@@ -60,5 +60,5 @@ p0wnedshell is heavily based on tools and knowledge from people like harmj0y, th
 ### Contact:
 
 To report an issue or request a feature, feel free to contact me at:
-Cornelis ```at``` dePlaa.com or [@Cneelis](https://twitter.com/Cneelis)
+Cornelis ```at``` dePlaa.com or [@Cn33lis](https://twitter.com/Cneelis)
 
