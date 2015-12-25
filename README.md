@@ -1,7 +1,7 @@
 # p0wnedShell
 PowerShell Runspace Post Exploitation Toolkit 
 
-Author: <Cneeliz>
+Author: Cn33liz
 
 License: BSD 3-Clause
 
