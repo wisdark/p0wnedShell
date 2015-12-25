@@ -47,6 +47,6 @@ InstallUtil.exe /logfile= /LogToConsole=false /U C:\p0wnedShell\p0wnedShellx64.e
 
 ### Shout-outs:
 
-p0wnedshell is heavily based on tools and knowledge from people like harmj0y, the guys from Powersploit, Sean Metcalf, SubTee, Nikhil Mittal, Benjamin Delpy e.g. So shout-outs go to them and of course to our friends in Redmond for giving us access to a very powerfull hacking language.
+p0wnedshell is heavily based on tools and knowledge from people like harmj0y, the guys from Powersploit, Sean Metcalf, SubTee, Nikhil Mittal, Besimorhino, Benjamin Delpy e.g. So shout-outs go to them and of course to our friends in Redmond for giving us access to a very powerfull hacking language.
 
 
