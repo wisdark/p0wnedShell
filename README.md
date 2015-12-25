@@ -4,6 +4,7 @@ PowerShell Runspace Post Exploitation Toolkit
 #Author: <Cneeliz>
 
 License: BSD 3-Clause
+
 To run as x86 binary and bypass Applocker:
 
 cd \Windows\Microsoft.NET\Framework\v4.0.30319 (Or newer .NET version folder)
