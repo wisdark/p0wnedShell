@@ -5,6 +5,12 @@ PowerShell Runspace Post Exploitation Toolkit
 
 License: BSD 3-Clause
 
+### What is it:
+
+p0wnedShell is a PowerShell Host application build in C# that has a lot of offensive PowerShell modules and binaries included to make the process of Post Exploitation easy-er.
+What I tried was to build an “all in one” Post Exploitation tool which I could use to bypass all mitigations solutions (or at least some off), and that has all relevant tooling included. 
+You can use it to perform modern attacks within Active Directory environments and create awareness within you Blue team so they can build the right defense strategies.
+
 ### How to Compile it:
 
 To compile p0wnedShell you need to import this project within Microsoft Visual Studio or if you don't have access to a Visual Studio installation, you can compile it as follows:
