@@ -35,7 +35,7 @@ p0wnedShell uses the System.Management.Automation namespace, so make sure you ha
 
 ### How to use it:
 
-Just the run the executables or...
+Just run the executables or...
 
 To run as x86 binary and bypass Applocker (Credits for this great bypass go to Casey Smith aka subTee):
 
