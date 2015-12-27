@@ -81,11 +81,16 @@ Powershell functions within the Runspace are loaded in memory from
 * Benjamin DELPY's MS14-068 kekeo Exploit
 * Didier Stevens modification of ReactOS Command Prompt
 
-Binaries are loaded in memory using ReflectivePEInjection (Byte arrays are Compressed using Gzip and saved as [Base64 encoded strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/CompressString.cs)).
+Binaries are loaded in memory using ReflectivePEInjection (Byte arrays are compressed using Gzip and saved as [Base64 encoded strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/CompressString.cs)).
 
 ### Shout-outs:
 
 p0wnedshell is heavily based on tools and knowledge from people like harmj0y, the guys from Powersploit, Sean Metcalf, SubTee, Nikhil Mittal, Besimorhino, Benjamin Delpy e.g. So shout-outs go to them and of course to our friends in Redmond for giving us access to a very powerfull hacking language.
+
+### Todo:
+
+* Tab completion within the shell using TabExpansion2.
+* More attacks (Overpass-the-hash e.g.)
 
 ### Contact:
 
