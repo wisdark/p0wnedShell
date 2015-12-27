@@ -81,7 +81,7 @@ Powershell functions within the Runspace are loaded in memory from
 * Benjamin DELPY's MS14-068 kekeo Exploit
 * Didier Stevens modification of ReactOS Command Prompt
 
-Binaries are loaded in memory using ReflectivePEInjection (Byte arrays are compressed using Gzip and saved as [Base64 encoded strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/CompressString.cs)).
+Binaries are loaded in memory using ReflectivePEInjection (Byte arrays are compressed using Gzip and saved within p0wnedShell as [Base64 encoded strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/CompressString.cs)).
 
 ### Shout-outs:
 
