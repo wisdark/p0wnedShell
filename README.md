@@ -90,7 +90,7 @@ p0wnedshell is heavily based on tools and knowledge from people like harmj0y, th
 ### Todo:
 
 * Tab completion within the shell using TabExpansion2.
-* More attacks (Overpass-the-hash e.g.)
+* More attacks (Overpass-the-hash, Kerberos Silver Tickets e.g.)
 
 ### Contact:
 
