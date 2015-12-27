@@ -35,7 +35,7 @@ p0wnedShell uses the System.Management.Automation namespace, so make sure you ha
 
 ### How to use it:
 
-Just the run the executables or...
+Just run the executables or...
 
 To run as x86 binary and bypass Applocker (Credits for this great bypass go to Casey Smith aka subTee):
 
@@ -53,9 +53,44 @@ cd \Windows\Microsoft.NET\Framework64\v4.0.30319 (Or newer .NET version folder)
 InstallUtil.exe /logfile= /LogToConsole=false /U C:\p0wnedShell\p0wnedShellx64.exe
 ```
 
+### What's inside the runspace:
+
+#### The following PowerShell tools/functions are included:
+
+* PowerSploit Invoke-Shellcode
+* PowerSploit Invoke-ReflectivePEInjection
+* PowerSploit Invoke-Mimikatz
+* PowerSploit Invoke-TokenManipulation
+* Veil's PowerTools PowerUp
+* Veil's PowerTools PowerView
+* HarmJ0y's Invoke-Psexec
+* Besimorhino's PowerCat
+* Nishang Invoke-PsUACme
+* Nishang Invoke-Encode
+* Nishang Get-PassHashes
+* Nishang Invoke-CredentialsPhish
+* Nishang Port-Scan
+* Nishang Copy-VSS
+
+Powershell functions within the Runspace are loaded in memory from
+[Base64 encode strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/PS1ToBase64.ps1).
+
+#### The following Binaries/tools are included:
+
+* Benjamin DELPY's Mimikatz
+* Benjamin DELPY's MS14-068 kekeo Exploit
+* Didier Stevens modification of ReactOS Command Prompt
+
+Binaries are loaded in memory using ReflectivePEInjection (Byte arrays are compressed using Gzip and saved as [Base64 encoded strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/CompressString.cs)).
+
 ### Shout-outs:
 
 p0wnedshell is heavily based on tools and knowledge from people like harmj0y, the guys from Powersploit, Sean Metcalf, SubTee, Nikhil Mittal, Besimorhino, Benjamin Delpy e.g. So shout-outs go to them and of course to our friends in Redmond for giving us access to a very powerfull hacking language.
+
+### Todo:
+
+* Tab completion within the shell using TabExpansion2.
+* More attacks (Overpass-the-hash, Kerberos Silver Tickets e.g.)
 
 ### Contact:
 
