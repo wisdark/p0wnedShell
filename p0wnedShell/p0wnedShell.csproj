@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="p0wnedBinaries.cs" />
     <Compile Include="p0wnedCredentialUI.cs" />
+    <Compile Include="p0wnedExploits.cs" />
     <Compile Include="p0wnedExtensionMethods.cs" />
     <Compile Include="p0wnedHost.cs" />
     <Compile Include="p0wnedHostUserInterface.cs" />

