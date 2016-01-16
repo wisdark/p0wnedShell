@@ -485,7 +485,8 @@ namespace p0wnedShell
             Console.Write("[+] Nishang Get-PassHashes\n");
             Console.Write("[+] Nishang Invoke-CredentialsPhish\n");
             Console.Write("[+] Nishang Port-Scan\n");
-            Console.Write("[+] Nishang Copy-VSS\n\n");
+            Console.Write("[+] Nishang Copy-VSS\n");
+            Console.Write("[+] Kevin Robertson Invoke-Inveigh\n\n");
             Console.Write("[+] Use Get-Help <ModuleName> for syntax usage and Have Fun :)\n\n");
             Console.ResetColor();
 
