@@ -74,6 +74,7 @@ InstallUtil.exe /logfile= /LogToConsole=false /U C:\p0wnedShell\p0wnedShellx64.e
 * Nishang Invoke-CredentialsPhish
 * Nishang Port-Scan
 * Nishang Copy-VSS
+* Kevin Robertson Invoke-Inveigh
 
 Powershell functions within the Runspace are loaded in memory from
 [Base64 encode strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/PS1ToBase64.ps1).
