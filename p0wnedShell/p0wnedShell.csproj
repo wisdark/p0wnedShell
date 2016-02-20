@@ -99,6 +99,7 @@
     <Compile Include="p0wnedHostUserInterface.cs" />
     <Compile Include="p0wnedHostUtilities.cs" />
     <Compile Include="p0wnedListenerConsole.cs" />
+    <Compile Include="p0wnedPotato.cs" />
     <Compile Include="p0wnedPowerCat.cs" />
     <Compile Include="p0wnedRawUserInterface.cs" />
     <Compile Include="p0wnedResources.cs" />
