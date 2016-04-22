@@ -208,7 +208,7 @@ namespace p0wnedShell
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Exploitation:\n");
             Console.ResetColor();
-            Console.WriteLine(" 11. Get into Ring0 using the MS14-058 and MS15-051 Vulnerability.");
+            Console.WriteLine(" 11. Get into Ring0 using the MS14-058, MS15-051 and MS16-032 Vulnerability.");
             Console.WriteLine(" 12. Own AD in 60 seconds using the MS14-068 Kerberos Vulnerability.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
@@ -490,7 +490,8 @@ namespace p0wnedShell
             Console.Write("[+] Nishang Port-Scan\n");
             Console.Write("[+] Nishang Copy-VSS\n");
             Console.Write("[+] Kevin Robertson Invoke-Tater\n");
-            Console.Write("[+] Kevin Robertson Invoke-Inveigh\n\n");
+            Console.Write("[+] Kevin Robertson Invoke-Inveigh\n");
+            Console.Write("[+] FuzzySecurity Invoke-MS16-032\n\n");
             Console.Write("[+] Use Get-Help <ModuleName> for syntax usage and Have Fun :)\n\n");
             Console.ResetColor();
 
