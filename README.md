@@ -64,8 +64,8 @@ InstallUtil.exe /logfile= /LogToConsole=false /U C:\p0wnedShell\p0wnedShellx64.e
 * PowerSploit Invoke-ReflectivePEInjection
 * PowerSploit Invoke-Mimikatz
 * PowerSploit Invoke-TokenManipulation
-* Veil's PowerTools PowerUp
-* Veil's PowerTools PowerView
+* PowerSploit PowerUp
+* PowerSploit PowerView
 * HarmJ0y's Invoke-Psexec
 * Besimorhino's PowerCat
 * Nishang Invoke-PsUACme
@@ -75,6 +75,7 @@ InstallUtil.exe /logfile= /LogToConsole=false /U C:\p0wnedShell\p0wnedShellx64.e
 * Nishang Port-Scan
 * Nishang Copy-VSS
 * Kevin Robertson Invoke-Inveigh
+* Kevin Robertson Tater
 
 Powershell functions within the Runspace are loaded in memory from
 [Base64 encode strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/PS1ToBase64.ps1).
@@ -91,7 +92,7 @@ Binaries are loaded in memory using ReflectivePEInjection (Byte arrays are compr
 
 ### Shout-outs:
 
-p0wnedshell is heavily based on tools and knowledge from people like harmj0y, the guys from Powersploit, Sean Metcalf, SubTee, Nikhil Mittal, Besimorhino, Benjamin Delpy e.g. So shout-outs go to them and of course to our friends in Redmond for giving us access to a very powerfull hacking language.
+p0wnedshell is heavily based on tools and knowledge from people like harmj0y, the guys from Powersploit, Sean Metcalf, SubTee, Nikhil Mittal, Besimorhino, Benjamin Delpy, Breenmachine, FoxGlove Security, Kevin Robertson and anyone else i forgot. So shout-outs go to them and of course to our friends in Redmond for giving us access to a very powerfull hacking language.
 
 ### Todo:
 
