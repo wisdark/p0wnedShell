@@ -91,6 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="p0wnedAmsiBypass.cs" />
     <Compile Include="p0wnedBinaries.cs" />
     <Compile Include="p0wnedCredentialUI.cs" />
     <Compile Include="p0wnedExploits.cs" />

