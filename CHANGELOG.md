@@ -1,5 +1,9 @@
 ### Changelog:
 
+#### Version 1.4:
+
+* Includes a bypass method for Amsi (Antimalware Scan Interface) within Windows 10.
+
 #### Version 1.3:
 
 * PowerSploit tools updated.
