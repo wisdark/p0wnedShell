@@ -1,5 +1,10 @@
 ### Changelog:
 
+#### Version 1.4.1:
+
+* Includes a new Potato/Tater (WPAD) Local Privilege Escalation trigger i found in the Office 2016/365 ClickToRun service.
+  ClickToRun issue Reported to MSRC on 4/29/2016 (WPAD/NTLM Loopback relay issue can be mitigated using MS16-077).
+
 #### Version 1.4:
 
 * Includes a bypass method for Amsi (Antimalware Scan Interface) within Windows 10.
