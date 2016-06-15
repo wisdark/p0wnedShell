@@ -10,7 +10,7 @@
 * PowerShell Runspace Post Exploitation Toolkit                     *
 * For Bitch Ass Admins that tried to block our PowerShell candy ;)  *
 *                                                                   *
-*                                                              v1.4 *
+*                                                            v1.4.1 *
 \*******************************************************************/
 
 /*
@@ -94,7 +94,7 @@ namespace p0wnedShell
                     Console.WriteLine(item);
                 }
             }
-            Console.WriteLine(@"*                                                              v1.4 *");
+            Console.WriteLine(@"*                                                            v1.4.1 *");
             Console.WriteLine(@"*********************************************************************");
             Console.ResetColor();
             Console.WriteLine();
