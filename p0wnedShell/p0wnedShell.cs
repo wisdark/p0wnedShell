@@ -5,12 +5,12 @@
 *   / /_/ / /_/ /| |/ |/ / / / /  __/ /_/ /___/ / / / /  __/ / /    *
 *  / .___/\____/ |__/|__/_/ /_/\___/\__,_//____/_/ /_/\___/_/_/     *
 * /_/                                                               *
-*                                    By Cn33liz and Skons 2016      *
+*                                    By Cn33liz and Skons 2017      *
 *                                                                   *
 * PowerShell Runspace Post Exploitation Toolkit                     *
 * For Bitch Ass Admins that tried to block our PowerShell candy ;)  *
 *                                                                   *
-*                                                            v1.4.1 *
+*                                                            v1.4.5 *
 \*******************************************************************/
 
 /*
@@ -84,7 +84,7 @@ namespace p0wnedShell
             Console.WriteLine(@"*   / /_/ / /_/ /| |/ |/ / / / /  __/ /_/ /___/ / / / /  __/ / /    *");
             Console.WriteLine(@"*  / .___/\____/ |__/|__/_/ /_/\___/\__,_//____/_/ /_/\___/_/_/     *");
             Console.WriteLine(@"* /_/                                                               *");
-            Console.WriteLine(@"*                                    /By Cn33liz and Skons 2016\    *");
+            Console.WriteLine(@"*                                    /By Cn33liz and Skons 2017\    *");
             Console.WriteLine(@"*                                       \Cornelis@dePlaa.com/       *");
             Console.WriteLine(@"*                                                                   *");
             if (toPrint != null)
@@ -94,7 +94,7 @@ namespace p0wnedShell
                     Console.WriteLine(item);
                 }
             }
-            Console.WriteLine(@"*                                                            v1.4.1 *");
+            Console.WriteLine(@"*                                                            v1.4.5 *");
             Console.WriteLine(@"*********************************************************************");
             Console.ResetColor();
             Console.WriteLine();
@@ -181,7 +181,7 @@ namespace p0wnedShell
         public static int DisplayMenu()
         {
             string[] toPrint = { "* PowerShell Runspace Post Exploitation Toolkit                     *",
-                                 "* Let's get your Blue Team out of Hibernation mode.                 *" };
+                                 "* For Bitch Ass Admins that tried to block our PowerShell candy ;)  *" };
             Program.PrintBanner(toPrint);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Information Gathering:\n");
@@ -502,7 +502,7 @@ namespace p0wnedShell
             Console.Write("[+] Nishang Port-Scan\n");
             Console.Write("[+] Nishang Copy-VSS\n");
             Console.Write("[+] Kevin Robertson Invoke-Tater\n");
-            Console.Write("[+] Kevin Robertson Invoke-Inveigh\n");
+            Console.Write("[+] Kevin Robertson Invoke-Inveigh, Invoke-InveighUnprivileged and Invoke-InveighRelay\n");
             Console.Write("[+] FuzzySecurity Invoke-MS16-032\n\n");
             Console.Write("[+] Use Get-Help <ModuleName> for syntax usage and Have Fun :)\n\n");
             Console.ResetColor();
