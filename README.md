@@ -6,6 +6,7 @@ PowerShell Runspace Post Exploitation Toolkit
 
 ### Author: Cn33liz and Skons
 
+Version: 2.0
 License: BSD 3-Clause
 
 ### What is it:
@@ -60,26 +61,26 @@ InstallUtil.exe /logfile= /LogToConsole=false /U C:\p0wnedShell\p0wnedShellx64.e
 
 #### The following PowerShell tools/functions are included:
 
-* PowerSploit Invoke-Shellcode
-* PowerSploit Invoke-ReflectivePEInjection
-* PowerSploit Invoke-Mimikatz
-* PowerSploit Invoke-TokenManipulation
-* PowerSploit PowerUp
-* PowerSploit PowerView
-* HarmJ0y's Invoke-Psexec
-* Besimorhino's PowerCat
-* Nishang Invoke-PsUACme
-* Nishang Invoke-Encode
-* Nishang Get-PassHashes
-* Nishang Invoke-CredentialsPhish
-* Nishang Port-Scan
-* Nishang Copy-VSS
-* Kevin Robertson Invoke-Inveigh
-* Kevin Robertson Tater
-* FuzzySecurity Invoke-MS16-032
+* PowerSploit: Invoke-Shellcode
+* PowerSploit: Invoke-ReflectivePEInjection
+* PowerSploit: Invoke-Mimikatz
+* PowerSploit: Invoke-TokenManipulation
+* PowerSploit: PowerUp and PowerView
+* Rasta Mouse: Sherlock
+* HarmJ0y's: Invoke-Psexec and Invoke-Kerberoast
+* Rohan Vazarkar's: Invoke-BloodHound (C# Ingestor)
+* Chris Campbell's: Get-GPPPassword
+* Tim Medin's: GetUserSPNS
+* Besimorhino's: PowerCat
+* Nishang: Copy-VSS and Invoke-Encode
+* Nishang: Invoke-PortScan and Get-PassHashes
+* Kevin Robertson: Invoke-Tater, Invoke-SMBExec and Invoke-WMIExec
+* Kevin Robertson: Invoke-Inveigh and Invoke-InveighRelay
+* FuzzySecurity: Invoke-MS16-032 and Invoke-MS16-135
+
 
 Powershell functions within the Runspace are loaded in memory from
-[Base64 encode strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/PS1ToBase64.ps1).
+[Base64 encode and compressed strings](https://github.com/Cn33liz/p0wnedShell/blob/master/Utilities/CompressString.cs).
 
 #### The following Binaries/tools are included:
 
@@ -98,7 +99,7 @@ p0wnedshell is heavily based on tools and knowledge from people like harmj0y, th
 ### Todo:
 
 * Tab completion within the shell using TabExpansion2.
-* More attacks (Overpass-the-hash, Kerberos Silver Tickets e.g.)
+* More attacks (Kerberos Silver Tickets e.g.)
 
 ### Contact:
 

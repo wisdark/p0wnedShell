@@ -11,6 +11,21 @@
     <AssemblyName>p0wnedShell</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -91,22 +106,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="p0wnedAmsiBypass.cs" />
-    <Compile Include="p0wnedBinaries.cs" />
-    <Compile Include="p0wnedCredentialUI.cs" />
-    <Compile Include="p0wnedExploits.cs" />
-    <Compile Include="p0wnedExtensionMethods.cs" />
-    <Compile Include="p0wnedHost.cs" />
-    <Compile Include="p0wnedHostUserInterface.cs" />
-    <Compile Include="p0wnedHostUtilities.cs" />
-    <Compile Include="p0wnedListenerConsole.cs" />
-    <Compile Include="p0wnedPotato.cs" />
-    <Compile Include="p0wnedPowerCat.cs" />
-    <Compile Include="p0wnedRawUserInterface.cs" />
-    <Compile Include="p0wnedResources.cs" />
+    <Compile Include="Modules\ADAttacks\p0wnedADAttacks.cs" />
+    <Compile Include="Amsi\p0wnedAmsiBypass.cs" />
+    <Compile Include="Modules\LateralMov\p0wnedMeter.cs" />
+    <Compile Include="Modules\LateralMov\p0wnedMov.cs" />
+    <Compile Include="Modules\SitAwareness\p0wnedAwareness.cs" />
+    <Compile Include="Resources\BinariesResources\p0wnedBinaries.cs" />
+    <Compile Include="PSHost\p0wnedCredentialUI.cs" />
+    <Compile Include="Modules\Injection\p0wnedExecute.cs" />
+    <Compile Include="Modules\Exploits\p0wnedExploits.cs" />
+    <Compile Include="PSHost\p0wnedExtensionMethods.cs" />
+    <Compile Include="PSHost\p0wnedHost.cs" />
+    <Compile Include="PSHost\p0wnedHostUserInterface.cs" />
+    <Compile Include="PSHost\p0wnedHostUtilities.cs" />
+    <Compile Include="Modules\PrivEsc\p0wnedInveigh.cs" />
+    <Compile Include="PSHost\p0wnedListenerConsole.cs" />
+    <Compile Include="Modules\Exploits\p0wnedPotato.cs" />
+    <Compile Include="Modules\LateralMov\p0wnedPowerCat.cs" />
+    <Compile Include="PSHost\p0wnedRawUserInterface.cs" />
+    <Compile Include="Resources\PSResources\p0wnedResources.cs" />
+    <Compile Include="Modules\ADAttacks\p0wnedRoast.cs" />
     <Compile Include="p0wnedShell.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Modules\PrivEsc\p0wnedSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +138,19 @@
   <ItemGroup>
     <Content Include="p0wnedShell.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

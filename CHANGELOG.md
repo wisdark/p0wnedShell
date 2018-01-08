@@ -1,5 +1,10 @@
 ### Changelog:
 
+#### Version 2.0:
+
+* Updated all PowerShell script/modules.
+* Added new Exploits/Attacks and automation.
+
 #### Version 1.4.1:
 
 * Includes a new Potato/Tater (WPAD) Local Privilege Escalation trigger i found in the Office 2016/365 ClickToRun service.
