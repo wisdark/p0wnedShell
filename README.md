@@ -22,7 +22,7 @@ You can change the following AutoMasq options before compiling:
 
 public static bool AutoMasq = true;
 
-public static string masqBinary = @"C:\Windows\System32\Notepad.exe";
+public static string masqBinary = @"C:\Windows\Notepad.exe";
 
 ### How to use it:
 
