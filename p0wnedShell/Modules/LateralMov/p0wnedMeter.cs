@@ -502,7 +502,7 @@ namespace p0wnedShell
                     IWebProxy webProxy = TestProxy.Proxy;
                     if (webProxy != null)
                     {
-                        MSFWebClient.Credentials = CredentialCache.DefaultNetworkCredentials;
+                        MSFWebClient.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
                         MSFWebClient.Proxy = webProxy;
                     }
 

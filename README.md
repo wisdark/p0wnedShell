@@ -6,7 +6,7 @@ PowerShell Runspace Post Exploitation Toolkit
 
 ### Author: Cn33liz and Skons
 
-Version: 2.0
+Version: 2.5
 License: BSD 3-Clause
 
 ### What is it:
@@ -17,29 +17,33 @@ You can use it to perform modern attacks within Active Directory environments an
 
 ### How to Compile it:
 
-To compile p0wnedShell you need to import this project within Microsoft Visual Studio or if you don't have access to a Visual Studio installation, you can compile it as follows:
+To compile p0wnedShell you need to open this project within Microsoft Visual Studio and build it for the x64/x86 platform.
+You can change the following AutoMasq options before compiling:
 
-To Compile as x86 binary:
-
-```
-cd \Windows\Microsoft.NET\Framework\v4.0.30319
-
-csc.exe /unsafe /reference:"C:\p0wnedShell\System.Management.Automation.dll" /reference:System.IO.Compression.dll /win32icon:C:\p0wnedShell\p0wnedShell.ico /out:C:\p0wnedShell\p0wnedShellx86.exe /platform:x86 "C:\p0wnedShell\*.cs"
-```
-
-To Compile as x64 binary:
-
-```
-cd \Windows\Microsoft.NET\Framework64\v4.0.30319
-
-csc.exe /unsafe /reference:"C:\p0wnedShell\System.Management.Automation.dll" /reference:System.IO.Compression.dll /win32icon:C:\p0wnedShell\p0wnedShell.ico /out:C:\p0wnedShell\p0wnedShellx64.exe /platform:x64 "C:\p0wnedShell\*.cs"
-```
-
-p0wnedShell uses the System.Management.Automation namespace, so make sure you have the System.Management.Automation.dll within your source path when compiling outside of Visual Studio.
+public static bool AutoMasq = true;
+public static string masqBinary = @"C:\Windows\System32\Notepad.exe";
 
 ### How to use it:
 
-Just run the executables or...
+With AutoMasq set to false, you just run the executable so it runs normally.
+With AutoMasq enabled, you could rename the p0wnedShell executable as the process you're going to masquerade (masqBinary), so it has the appearance of that process (for example notepad.exe).
+
+Using the optional "-parent" commandline argument, you can start p0wnedShell using another Parent Process ID.
+When combining the PEB Masq option and different parent process ID (for example svchost), you can give p0wnedShell the appearance of a legitimate service ;) 
+
+Note: Running p0wnedShell using another Parent Process ID doesn't work from a Meterpreter session/shell.... yet!
+
+```
+Changing the Parent Process ID can also be used to spawn a p0wnedShell process with system privileges, for example using lsass as the the parent process.
+For this you need to have UAC elevated administrator permissions.
+
+C:\p0wnedShell>p0wnedShellx64.exe -parent
+ 
+ [+] Please enter a valid Parent Process name.
+ [+] For Example: C:\p0wnedShell\p0wnedShellx64.exe -parent svchost
+ 
+C:\p0wnedShell>p0wnedShellx64.exe -parent lsass
+```
 
 To run as x86 binary and bypass Applocker (Credits for this great bypass go to Casey Smith aka subTee):
 
@@ -99,7 +103,9 @@ p0wnedshell is heavily based on tools and knowledge from people like harmj0y, th
 ### Todo:
 
 * Tab completion within the shell using TabExpansion2.
-* More attacks (Kerberos Silver Tickets e.g.)
+* More attacks (Kerberos Silver Tickets e.g.).
+* More usefull powershell modules.
+* Fix the console redirection when running p0wnedShell from a Meterpreter shell using a different Parent Process ID.
 
 ### Contact:
 

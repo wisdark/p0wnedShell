@@ -1,5 +1,15 @@
 ### Changelog:
 
+#### Version 2.5:
+
+* p0wnedShell can now be run from a Meterpreter shell.
+* Added a recent version of Mimikatz and changed the in memory PE loader to Native C# code.
+* Ported EasySystem (using namedpipe impersonation) to native C# code (instead of using reflective PE injection).
+* Fixed a Proxy authentication issue within the domainfronting enabled Meterpreter stager.
+* Added option to masquerade the p0wnedShell process (PEB) so it has the appearance of a another process (notepad.exe e.g.).
+* Added -parent command line option to start p0wnedShell using another Parent Process ID (svchost e.g.).
+* Using the same technique to start p0wnedShell with another Parent Process, we can also create a new process with a system token. 
+
 #### Version 2.0:
 
 * Updated all PowerShell script/modules.

