@@ -21,7 +21,9 @@ namespace p0wnedShell
             Console.WriteLine();
             Console.WriteLine(" 2. BloodHound: Six Degrees of Domain Admin.");
             Console.WriteLine();
-            Console.WriteLine(" 3. Back.");
+            Console.WriteLine(" 3. BloodHound: Six Degrees of Domain Admin (Collect all data)");
+            Console.WriteLine();
+            Console.WriteLine(" 4. Back.");
             Console.Write("\nEnter choice: ");
 
             int userInput = 0;
@@ -30,7 +32,7 @@ namespace p0wnedShell
                 try
                 {
                     userInput = Convert.ToInt32(Console.ReadLine());
-                    if (userInput < 1 || userInput > 3)
+                    if (userInput < 1 || userInput > 4)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\n[+] Wrong choice, please try again!\n");
@@ -58,6 +60,9 @@ namespace p0wnedShell
                     break;
                 case 2:
                     BloodHound();
+                    break;
+                case 3:
+                    BloodHoundAll();
                     break;
                 default:
                     break;
@@ -145,6 +150,59 @@ namespace p0wnedShell
             }
 
                 Console.WriteLine("\n[+] BloodHound Data is saved in a zip file in the current directory.");
+            Console.WriteLine("[+] You can unzip and import the csv's in your offline BloodHound Installation.");
+
+            Console.WriteLine("\nPress Enter to Continue...");
+            Console.ReadLine();
+            return;
+        }
+
+        public static void BloodHoundAll()
+        {
+            string[] toPrint = { "* BloodHound: Six Degrees of Domain Admin.                          *" };
+            Program.PrintBanner(toPrint);
+
+            string DomainJoined = String.Empty;
+            try
+            {
+                DomainJoined = Domain.GetComputerDomain().Name;
+            }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[+] Looks like our machine is not joined to a Windows Domain.\n");
+                Console.ResetColor();
+                Console.WriteLine("Press Enter to Continue...");
+                Console.ReadLine();
+                return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("[+] BloodHound uses graph theory to reveal the hidden and often unintended relationships");
+            Console.WriteLine("[+] within an Active Directory environment. Attackers can use BloodHound to easily identify");
+            Console.WriteLine("[+] highly complex attack paths that would otherwise be impossible to quickly identify.");
+            Console.WriteLine("[+] Defenders can use BloodHound to identify and eliminate those same attack paths.");
+            Console.WriteLine("[+] More Info: https://github.com/BloodHoundAD/BloodHound/wiki\n");
+            Console.ResetColor();
+
+            Console.WriteLine("[+] Please wait, this could take a while on large Domains...\n");
+
+            string UserHunter = "Invoke-BloodHound -CollectionMethod All -CompressData -RemoveCSV";
+            try
+            {
+                P0wnedListener.Execute(UserHunter);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            if (File.Exists(Program.P0wnedPath() + "\\BloodHound.bin"))
+            {
+                File.Delete(Program.P0wnedPath() + "\\BloodHound.bin");
+            }
+
+            Console.WriteLine("\n[+] BloodHound Data is saved in a zip file in the current directory.");
             Console.WriteLine("[+] You can unzip and import the csv's in your offline BloodHound Installation.");
 
             Console.WriteLine("\nPress Enter to Continue...");
