@@ -21,7 +21,8 @@ To compile p0wnedShell you need to open this project within Microsoft Visual Stu
 You can change the following AutoMasq options before compiling:
 
 public static bool AutoMasq = true;
-public static string masqBinary = @"C:\Windows\System32\Notepad.exe";
+
+public static string masqBinary = @"C:\Windows\Notepad.exe";
 
 ### How to use it:
 
@@ -34,7 +35,8 @@ When combining the PEB Masq option and different parent process ID (for example 
 Note: Running p0wnedShell using another Parent Process ID doesn't work from a Meterpreter session/shell.... yet!
 
 ```
-Changing the Parent Process ID can also be used to spawn a p0wnedShell process with system privileges, for example using lsass as the the parent process.
+Changing the Parent Process ID can also be used to spawn a p0wnedShell process with system privileges, 
+for example using lsass as the the parent process.
 For this you need to have UAC elevated administrator permissions.
 
 C:\p0wnedShell>p0wnedShellx64.exe -parent
