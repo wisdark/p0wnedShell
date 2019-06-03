@@ -1,5 +1,11 @@
 ### Changelog:
 
+#### Version 2.6:
+
+* Added a recent version of Mimikatz.
+* Updated some PowerShell script/modules.
+* Fixed some PowerSploit scripts so they work "again" in latest Windows 10 builds.
+
 #### Version 2.5:
 
 * p0wnedShell can now be run from a Meterpreter shell.

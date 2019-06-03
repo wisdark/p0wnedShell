@@ -6,7 +6,7 @@ PowerShell Runspace Post Exploitation Toolkit
 
 ### Author: Cn33liz and Skons
 
-Version: 2.5
+Version: 2.6
 License: BSD 3-Clause
 
 ### What is it:

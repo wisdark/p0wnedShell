@@ -10,7 +10,7 @@
 * PowerShell Runspace Post Exploitation Toolkit                     *
 * A RedTeam Swiss Army Knife for Windows Based Systems              *
 *                                                                   *
-*                                                            v2.5   *
+*                                                            v2.6   *
 \*******************************************************************/
 
 /*
@@ -56,7 +56,7 @@ namespace p0wnedShell
 {
     public static class p0wnedShellOpsec
     {
-        public static bool AutoMasq = true;
+        public static bool AutoMasq = false;
         public static string masqBinary = @"C:\Windows\notepad.exe";
         //public static string masqBinary = Environment.SystemDirectory + @\wbem\WmiPrvSE.exe";
         //public static string masqBinary = Environment.SystemDirectory + @"\WindowsPowerShell\v1.0\powershell.exe";
@@ -139,7 +139,7 @@ namespace p0wnedShell
                 procArch = "x64";
             }
 
-            Console.WriteLine(@"*                                                        v2.5  " + procArch + "  *");
+            Console.WriteLine(@"*                                                        v2.6  " + procArch + "  *");
             Console.WriteLine(@"*********************************************************************");
             Console.ResetColor();
             Console.WriteLine();
